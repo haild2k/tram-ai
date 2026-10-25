@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<!-- LONG-FORM scaffold: native 16:9 (1920x1080) — do NOT swap the canvas -->
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Long-form Compare Template</title>
+<link
+  href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,500;0,600;1,500&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  /*
+   * Dynamic "Animation" template — LONG-FORM / COMPARISON variant (16:9 only).
+   * Copied per video by the media-long-remote-skill skill. Same contract as the
+   * tram-ai-template-video scaffold + 4 extra layouts for roundup /
+   * comparison videos: chapter, compare (table), vs (head-to-head), spec.
+   * The skill only: (1) swaps the canvas size for the chosen aspect
+   *   (9:16 -> 1080x1920, 16:9 -> 1920x1080: the <meta> width/height, the
+   *   html/body/#root width/height, and #root data-width/data-height),
+   * (2) tunes the --bg*/--accent* palette + fonts to the content tone,
+   * (3) fills each scene's `inputs`.
+   * All motion is pure CSS @keyframes, small in travel, and settles gently to a
+   * dead-still hold frame by ~2.2s (the pipeline freezes the last frame to
+   * stretch the clip to the narration length — residual motion there, or a
+   * still-moving animation at its END, both read as a "jerk"). Do not add motion
+   * that runs past ~2.2s. Be Vietnam Pro (sans) + Lora (serif) cover Vietnamese.
+   *
+   * IMPORTANT: custom properties are declared on #root (NOT :root) and every
+   * var() carries a fallback — the render harness does not always expose
+   * :root/html-level variables to the composition.
+   */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b1020; }
+
+  #root {
+    /* ---- palette / scale: the skill tweaks these per video ---- */
+    --bg1: #0b1020;
+    --bg2: #131a33;
+    --ink: #f4f6fc;
+    --muted: rgba(244, 246, 252, 0.66);
+    --accent1: #ff9a3d;
+    --accent2: #ff2d55;
+    --card: rgba(255, 255, 255, 0.055);
+    --stroke: rgba(255, 255, 255, 0.12);
+    --pad: 96px;
+    --h1: 104px;
+    --body: 40px;
+
+    position: relative; width: 1920px; height: 1080px; overflow: hidden;
+    background: #0b1020; background: var(--bg1, #0b1020);
+    color: #f4f6fc; color: var(--ink, #f4f6fc);
+    font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  }
+
+  /* ---------- animated background ---------- */
+  .bg { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(1100px 900px at 16% 10%, rgba(255,154,61,0.24) 0%, transparent 55%),
+      radial-gradient(1000px 860px at 88% 16%, rgba(255,45,85,0.18) 0%, transparent 58%),
+      radial-gradient(1200px 1000px at 50% 112%, rgba(0,0,0,0.55) 0%, transparent 62%);
+    animation: hue 1.6s ease-out both; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); mix-blend-mode: screen;
+    z-index: 1; opacity: 0.45; will-change: transform; }
+  .blob.b1 { width: 620px; height: 620px; background: #ff9a3d; background: var(--accent1, #ff9a3d);
+    top: -140px; left: -120px; animation: drift1 2s cubic-bezier(.33,1,.68,1) both; }
+  .blob.b2 { width: 520px; height: 520px; background: #ff2d55; background: var(--accent2, #ff2d55);
+    bottom: -160px; right: -120px; animation: drift2 2.2s cubic-bezier(.33,1,.68,1) both; }
+  .grid { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.4;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+    -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 82%);
+    mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 82%); }
+  .vignette { position: absolute; inset: 0; z-index: 6; pointer-events: none;
+    background: radial-gradient(circle at 50% 44%, transparent 55%, rgba(0,0,0,0.55) 100%); }
+
+  /* Background + image motion is FINITE, SMALL, and eases out gently (easeOutCubic)
+     to a dead-still rest pose within ~2.2s — long before data-duration. Two
+     reasons: (1) the pipeline freezes the last rendered frame to stretch the clip
+     to narration length, so any residual motion at that point would "jerk"; and
+     (2) an animation that is still visibly moving when it ENDS reads as a jerk
+     even mid-clip — the settle must be slow and short-travel so the final frames
+     move sub-pixel. Keep new motion under this budget. */
+  @keyframes hue { from { filter: hue-rotate(-5deg); } to { filter: hue-rotate(0deg); } }
+  @keyframes drift1 { from { transform: translate(-30px,-22px) scale(1.06); } to { transform: translate(0,0) scale(1); } }
+  @keyframes drift2 { from { transform: translate(28px,18px) scale(1.07); } to { transform: translate(0,0) scale(1.05); } }
+
+  /* ---------- entrance keyframes (finite, "both") ---------- */
+  @keyframes fadeUp   { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes popIn    { from { opacity: 0; transform: scale(0.86); } to { opacity: 1; transform: scale(1); } }
+  @keyframes wipe     { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes kenburns { from { transform: scale(1.06) translate(0.8%, -0.5%); } to { transform: scale(1) translate(0,0); } }
+  @keyframes barGrow  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* ---------- stage / shared type ---------- */
+  .stage { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start; gap: 34px;
+    padding: 96px; padding: var(--pad, 96px); }
+  .stage > * { max-width: 100%; }
+  .kicker { font-size: 26px; font-weight: 700; letter-spacing: 6px; text-transform: uppercase;
+    color: #ff9a3d; color: var(--accent1, #ff9a3d);
+    animation: fadeDown 0.6s cubic-bezier(.16,1,.3,1) 0.15s both; }
+  .headline { font-size: 104px; font-size: var(--h1, 104px); font-weight: 800; line-height: 1.12;
+    letter-spacing: -2px; animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.32s both; }
+  .headline .accent { background-image: linear-gradient(96deg, #ff9a3d, #ff2d55);
+    background-image: linear-gradient(96deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .body { font-size: 40px; font-size: var(--body, 40px); font-weight: 500; line-height: 1.5;
+    color: rgba(244,246,252,0.66); color: var(--muted, rgba(244,246,252,0.66));
+    animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.52s both; }
+  .rule { width: 132px; height: 5px; border-radius: 3px; transform-origin: left center;
+    background: linear-gradient(90deg, #ff9a3d, #ff2d55);
+    background: linear-gradient(90deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55));
+    animation: barGrow 0.7s cubic-bezier(.16,1,.3,1) 0.44s both; }
+
+  /* ---------- media ---------- */
+  .media { position: relative; overflow: hidden; z-index: 3; }
+  .media img { width: 100%; height: 100%; object-fit: cover; object-position: center;
+    animation: kenburns 2.2s cubic-bezier(.33,1,.68,1) both; }
+  .media .scrim { position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 28%, rgba(0,0,0,0.15) 52%, rgba(0,0,0,0.82) 100%); }
+
+  /* ===== hero (bg only) ===== */
+  .layout-hero .stage { text-align: center; align-items: center; }
+  .layout-hero .headline { font-size: 112px; }
+  .layout-hero.ar-wide .headline { font-size: 96px; }
+  .layout-hero .body { margin: 0 auto; }
+  .layout-hero .cta { display: inline-flex; align-items: center; gap: 12px; margin-top: 10px;
+    font-size: 25px; font-weight: 700; letter-spacing: 1px; padding: 16px 40px; border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.06);
+    animation: popIn 0.6s cubic-bezier(.16,1,.3,1) 0.8s both; }
+
+  /* ===== image-full ===== */
+  .layout-image-full .media.full { position: absolute; inset: 0; }
+  .layout-image-full .stage { justify-content: flex-end; z-index: 5; }
+  .layout-image-full .headline { text-shadow: 0 4px 30px rgba(0,0,0,0.6); }
+  .layout-image-full .body { color: rgba(255,255,255,0.92); text-shadow: 0 2px 16px rgba(0,0,0,0.55); }
+
+  /* ===== split (stacks on 9:16, side-by-side on 16:9) ===== */
+  .layout-split .split-wrap { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; }
+  .layout-split.ar-wide .split-wrap { flex-direction: row; }
+  .layout-split .split-wrap .media { flex: 0 0 46%; animation: wipe 0.8s cubic-bezier(.16,1,.3,1) 0.1s both; }
+  .layout-split.ar-wide .split-wrap .media { flex-basis: 44%; }
+  .layout-split .split-wrap .stage { position: relative; inset: auto; flex: 1 1 auto; }
+
+  /* ===== text ===== */
+  .layout-text .headline { font-size: 108px; }
+  .layout-text.ar-wide .headline { font-size: 96px; }
+
+  /* ===== quote ===== */
+  .layout-quote .stage { align-items: flex-start; }
+  .layout-quote .qmark { font-family: "Lora", serif; font-size: 180px; line-height: 0.5; height: 90px;
+    color: #ff9a3d; color: var(--accent1, #ff9a3d); opacity: 0.5;
+    animation: popIn 0.6s cubic-bezier(.16,1,.3,1) 0.1s both; }
+  .layout-quote .quote { font-family: "Lora", serif; font-size: 58px; font-style: italic; font-weight: 500;
+    line-height: 1.35; animation: fadeUp 0.8s cubic-bezier(.16,1,.3,1) 0.3s both; }
+  .layout-quote.ar-wide .quote { font-size: 52px; }
+  .layout-quote .attr { font-size: 30px; font-weight: 600; color: rgba(244,246,252,0.66);
+    color: var(--muted, rgba(244,246,252,0.66)); animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.6s both; }
+
+  /* ===== stat ===== */
+  .layout-stat .figure { font-size: 260px; font-weight: 900; letter-spacing: -8px; line-height: 0.9;
+    background-image: linear-gradient(120deg, #ff9a3d, #ff2d55);
+    background-image: linear-gradient(120deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: popIn 0.7s cubic-bezier(.16,1,.3,1) 0.2s both; }
+  .layout-stat.ar-wide .figure { font-size: 220px; }
+  .layout-stat .figure-label { font-size: 44px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    animation: fadeUp 0.6s cubic-bezier(.16,1,.3,1) 0.45s both; }
+
+  /* ===== list ===== */
+  .layout-list .stage { gap: 24px; }
+  .layout-list .list { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+  .layout-list .li { display: flex; align-items: center; gap: 22px; padding: 24px 28px; border-radius: 20px;
+    background: rgba(255,255,255,0.055); background: var(--card, rgba(255,255,255,0.055));
+    border: 1px solid rgba(255,255,255,0.12); border: 1px solid var(--stroke, rgba(255,255,255,0.12)); }
+  .layout-list .li .ic { font-size: 38px; flex: 0 0 auto; }
+  .layout-list .li .lt { font-size: 33px; font-weight: 700; }
+  .layout-list .li .ld { font-size: 24px; color: rgba(244,246,252,0.66);
+    color: var(--muted, rgba(244,246,252,0.66)); margin-top: 4px; }
+
+  /* ===== outro ===== */
+  .layout-outro .stage { text-align: center; align-items: center; gap: 22px; }
+  .layout-outro .mark { width: 128px; height: 128px; border-radius: 30px; margin-bottom: 8px;
+    background: conic-gradient(from 0deg, #ff9a3d, #ff2d55, #ff9a3d);
+    background: conic-gradient(from 0deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55), var(--accent1, #ff9a3d));
+    animation: popIn 0.7s cubic-bezier(.16,1,.3,1) 0.1s both; }
+  .layout-outro .logo { width: 220px; height: 220px; object-fit: contain; margin-bottom: 14px;
+    filter: drop-shadow(0 10px 44px rgba(0,0,0,0.45));
+    animation: popIn 0.7s cubic-bezier(.16,1,.3,1) 0.1s both; }
+  .layout-outro .brand { font-size: 116px; font-weight: 900; letter-spacing: -3px; color: #fff;
+    animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.3s both; }
+  .layout-outro .tagline { font-size: 38px; color: rgba(244,246,252,0.66);
+    color: var(--muted, rgba(244,246,252,0.66)); animation: fadeUp 0.7s ease 0.55s both; }
+  .layout-outro .url { font-size: 25px; letter-spacing: 3px; color: #ff9a3d;
+    color: var(--accent1, #ff9a3d); animation: fadeIn 0.6s ease 0.9s both; }
+  .layout-outro .socials { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 40px;
+    margin-top: 14px; animation: fadeIn 0.6s ease 1.05s both; }
+  .layout-outro .social { font-size: 24px; color: rgba(244,246,252,0.72);
+    color: var(--muted, rgba(244,246,252,0.72)); display: flex; align-items: baseline; gap: 10px; }
+  .layout-outro .social b { color: #fff; font-weight: 700; }
+  .layout-outro .social .plat { font-size: 20px; letter-spacing: 2px; text-transform: uppercase;
+    color: #ff9a3d; color: var(--accent1, #ff9a3d); }
+
+
+  /* ===================== LONG-FORM EXTRA LAYOUTS ===================== */
+  /* All entrances finish <= ~1.9s (stagger caps below) — same settle budget. */
+
+  /* ===== chapter (section title card) ===== */
+  .layout-chapter .stage { gap: 26px; }
+  .layout-chapter .ch-index { font-size: 220px; font-weight: 900; line-height: 0.85; letter-spacing: -8px;
+    background-image: linear-gradient(120deg, #ff9a3d, #ff2d55);
+    background-image: linear-gradient(120deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: popIn 0.7s cubic-bezier(.16,1,.3,1) 0.1s both; }
+  .layout-chapter .headline { font-size: 96px; }
+
+  /* ===== compare (spec table, 2-4 columns) ===== */
+  .layout-compare .stage { justify-content: flex-start; gap: 22px; padding: 72px 96px 120px; }
+  .layout-compare .headline { font-size: 60px; letter-spacing: -1px; }
+  .layout-compare .cmp { width: 100%; border-collapse: separate; border-spacing: 0 10px; table-layout: fixed; }
+  .layout-compare .cmp th, .layout-compare .cmp td { padding: 14px 22px; text-align: center; vertical-align: middle; }
+  .layout-compare .cmp th { font-size: 32px; font-weight: 800; color: #fff; }
+  .layout-compare .cmp th .thumb { display: block; width: 100%; height: 150px; object-fit: cover; border-radius: 14px;
+    margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.12); }
+  .layout-compare .cmp th .ctag { display: block; font-size: 20px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: #ff9a3d; color: var(--accent1, #ff9a3d); margin-top: 4px; }
+  .layout-compare .cmp th.rl { width: 24%; }
+  .layout-compare .cmp td { font-size: 30px; font-weight: 600;
+    background: rgba(255,255,255,0.055); background: var(--card, rgba(255,255,255,0.055)); }
+  .layout-compare .cmp td.rl { text-align: left; font-size: 25px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: rgba(244,246,252,0.66); color: var(--muted, rgba(244,246,252,0.66));
+    border-radius: 14px 0 0 14px; }
+  .layout-compare .cmp td:last-child { border-radius: 0 14px 14px 0; }
+  .layout-compare .cmp td.best { color: #fff; font-weight: 800;
+    background: linear-gradient(120deg, rgba(255,154,61,0.36), rgba(255,45,85,0.30)); }
+  .layout-compare .cmp td.best::after { content: " ★"; color: #ffd166; }
+  .layout-compare .note { font-size: 22px; color: rgba(244,246,252,0.6); color: var(--muted, rgba(244,246,252,0.6));
+    animation: fadeIn 0.6s ease 1.3s both; }
+
+  /* ===== vs (head-to-head, 2 images) ===== */
+  .layout-vs .vs-wrap { position: absolute; inset: 0; z-index: 3; display: flex; }
+  .layout-vs .vs-side { position: relative; flex: 1 1 50%; overflow: hidden; }
+  .layout-vs .vs-side.l { animation: wipe 0.8s cubic-bezier(.16,1,.3,1) 0.05s both; }
+  .layout-vs .vs-side.r { animation: fadeIn 0.8s ease 0.25s both; }
+  .layout-vs .vs-side .media { position: absolute; inset: 0; }
+  .layout-vs .vs-side .cap { position: absolute; left: 64px; right: 64px; bottom: 120px; z-index: 5; }
+  .layout-vs .vs-side .nm { font-size: 64px; font-weight: 900; line-height: 1.05; letter-spacing: -1px;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.6); animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.45s both; }
+  .layout-vs .vs-side .sb { font-size: 32px; font-weight: 600; margin-top: 10px; color: rgba(255,255,255,0.9);
+    text-shadow: 0 2px 16px rgba(0,0,0,0.55); animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.6s both; }
+  .layout-vs .vs-side.r .cap { text-align: right; }
+  .layout-vs .vs-badge { position: absolute; left: 50%; top: 50%; z-index: 6; width: 180px; height: 180px;
+    margin: -90px 0 0 -90px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 72px; font-weight: 900; color: #fff; box-shadow: 0 10px 60px rgba(0,0,0,0.55);
+    background: linear-gradient(135deg, #ff9a3d, #ff2d55);
+    background: linear-gradient(135deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55));
+    animation: popIn 0.6s cubic-bezier(.16,1,.3,1) 0.7s both; }
+  .layout-vs .vs-top { position: absolute; left: 0; right: 0; top: 64px; z-index: 6; text-align: center; }
+  .layout-vs .vs-top .kicker { display: inline-block; padding: 10px 26px; border-radius: 999px; background: rgba(0,0,0,0.45); }
+  .layout-vs .media .scrim { background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, transparent 30%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.85) 100%); }
+
+  /* ===== spec (image + key/value spec sheet) ===== */
+  .layout-spec .spec-wrap { position: absolute; inset: 0; z-index: 3; display: flex; }
+  .layout-spec .spec-wrap .media { flex: 0 0 50%; animation: wipe 0.8s cubic-bezier(.16,1,.3,1) 0.1s both; }
+  .layout-spec .spec-wrap .stage { position: relative; inset: auto; flex: 1 1 auto; gap: 20px; padding: 72px 88px 120px; }
+  .layout-spec .headline { font-size: 72px; letter-spacing: -1px; }
+  .layout-spec .badge { display: inline-block; font-size: 22px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase;
+    padding: 8px 20px; border-radius: 999px; color: #fff;
+    background: linear-gradient(90deg, #ff9a3d, #ff2d55);
+    background: linear-gradient(90deg, var(--accent1, #ff9a3d), var(--accent2, #ff2d55));
+    animation: popIn 0.5s cubic-bezier(.16,1,.3,1) 0.2s both; }
+  .layout-spec .specs { width: 100%; display: flex; flex-direction: column; }
+  .layout-spec .sp { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12); border-bottom: 1px solid var(--stroke, rgba(255,255,255,0.12)); }
+  .layout-spec .sp .k { font-size: 26px; font-weight: 600; color: rgba(244,246,252,0.66); color: var(--muted, rgba(244,246,252,0.66)); }
+  .layout-spec .sp .val { font-size: 34px; font-weight: 800; text-align: right; }
+
+  /* footer */
+  .foot { position: absolute; left: 96px; right: 96px; left: var(--pad, 96px); right: var(--pad, 96px);
+    bottom: 66px; z-index: 7; display: flex; justify-content: space-between; font-size: 21px;
+    letter-spacing: 3px; text-transform: uppercase; color: rgba(244,246,252,0.6);
+    animation: fadeIn 0.6s ease 1s both; }
+</style>
+</head>
+<body>
+  <div
+    id="root"
+    class="layout-hero"
+    data-composition-id="main"
+    data-start="0"
+    data-duration="6"
+    data-width="1920"
+    data-height="1080"
+    data-composition-variables='{"layout":"hero","kicker":"Bản tin","headline":"Tiêu đề {mẫu}","body":"Một câu dẫn ngắn cho cảnh mở đầu.","cta":"Theo dõi ngay"}'
+  >
+    <div class="bg"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="grid"></div>
+
+    <div class="media full" hidden><img alt="" /><div class="scrim"></div></div>
+    <div class="split-wrap" hidden></div>
+    <div class="stage"></div>
+    <div class="foot" hidden><span class="foot-l"></span><span class="foot-r"></span></div>
+    <div class="vignette"></div>
+  </div>
+
+  <script>
+    (function () {
+      var v = (window.__hyperframes && typeof window.__hyperframes.getVariables === "function")
+        ? window.__hyperframes.getVariables() : {};
+      var root = document.getElementById("root");
+      var stage = document.querySelector(".stage");
+      var s = function (x) { return x == null ? "" : String(x); };
+      var has = function (x) { return x != null && String(x).trim() !== ""; };
+
+      var layout = has(v.layout) ? String(v.layout) : "hero";
+      root.className = "layout-" + layout;
+
+      // aspect class (drives the side-by-side split + wide type sizes)
+      var w = +root.getAttribute("data-width") || 1080;
+      var h = +root.getAttribute("data-height") || 1920;
+      root.classList.add(w >= h ? "ar-wide" : "ar-tall");
+
+      // optional per-scene palette overrides (else the folder palette)
+      var rs = root.style;
+      if (has(v.accent_from)) rs.setProperty("--accent1", String(v.accent_from));
+      if (has(v.accent_to))   rs.setProperty("--accent2", String(v.accent_to));
+      if (has(v.bg_from))     rs.setProperty("--bg1", String(v.bg_from));
+      if (has(v.bg_to))       rs.setProperty("--bg2", String(v.bg_to));
+
+      function el(cls, txt, tag) {
+        var e = document.createElement(tag || "div");
+        e.className = cls;
+        if (txt != null) e.textContent = String(txt);
+        return e;
+      }
+      // headline with an optional {accent} span: "Giá tăng {gấp đôi} sau một năm"
+      function headline(str) {
+        var hEl = document.createElement("h1");
+        hEl.className = "headline";
+        var m = /^([\s\S]*?)\{([\s\S]+?)\}([\s\S]*)$/.exec(str || "");
+        if (m) {
+          if (m[1]) hEl.appendChild(document.createTextNode(m[1]));
+          var a = document.createElement("span"); a.className = "accent"; a.textContent = m[2];
+          hEl.appendChild(a);
+          if (m[3]) hEl.appendChild(document.createTextNode(m[3]));
+        } else { hEl.textContent = str || ""; }
+        return hEl;
+      }
+      function fillMedia(host) {
+        if (!host || !has(v.image)) return false;
+        host.hidden = false;
+        var img = host.querySelector("img");
+        img.src = String(v.image);
+        if (has(v.image_focus)) img.style.objectPosition = String(v.image_focus);
+        if (has(v.image_alt)) img.alt = String(v.image_alt);
+        return true;
+      }
+
+      if (layout === "hero") {
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        stage.appendChild(headline(s(v.headline)));
+        if (has(v.body)) stage.appendChild(el("body", v.body, "p"));
+        if (has(v.cta))  stage.appendChild(el("cta", v.cta));
+      }
+      else if (layout === "image-full") {
+        fillMedia(document.querySelector(".media.full"));
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        stage.appendChild(headline(s(v.headline)));
+        if (has(v.body)) stage.appendChild(el("body", v.body, "p"));
+      }
+      else if (layout === "split") {
+        var wrap = document.querySelector(".split-wrap");
+        wrap.hidden = false;
+        if (has(v.image)) {
+          var media = document.querySelector(".media.full");
+          media.classList.remove("full");
+          fillMedia(media);
+          wrap.appendChild(media);
+        }
+        var col = document.createElement("div"); col.className = "stage";
+        if (has(v.kicker)) col.appendChild(el("kicker", v.kicker));
+        col.appendChild(headline(s(v.headline)));
+        if (has(v.body)) col.appendChild(el("body", v.body, "p"));
+        wrap.appendChild(col);
+        stage.remove(); stage = col;
+      }
+      else if (layout === "text") {
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        stage.appendChild(headline(s(v.headline)));
+        stage.appendChild(el("rule"));
+        if (has(v.body)) stage.appendChild(el("body", v.body, "p"));
+      }
+      else if (layout === "quote") {
+        stage.appendChild(el("qmark", "“"));
+        stage.appendChild(el("quote", v.quote != null ? v.quote : v.headline, "p"));
+        if (has(v.attr)) stage.appendChild(el("attr", "— " + s(v.attr)));
+      }
+      else if (layout === "stat") {
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        stage.appendChild(el("figure", v.figure));
+        if (has(v.figure_label)) stage.appendChild(el("figure-label", v.figure_label));
+        if (has(v.body)) stage.appendChild(el("body", v.body, "p"));
+      }
+      else if (layout === "list") {
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        if (has(v.headline)) stage.appendChild(headline(s(v.headline)));
+        var list = document.createElement("div"); list.className = "list";
+        (Array.isArray(v.items) ? v.items : []).slice(0, 5).forEach(function (it, i) {
+          it = it || {};
+          var li = document.createElement("div"); li.className = "li";
+          li.style.animation = "fadeUp 0.55s cubic-bezier(.16,1,.3,1) " + (0.4 + i * 0.13).toFixed(2) + "s both";
+          if (has(it.icon)) li.appendChild(el("ic", it.icon));
+          var b = document.createElement("div"); b.className = "lb";
+          b.appendChild(el("lt", it.title));
+          if (has(it.desc)) b.appendChild(el("ld", it.desc));
+          li.appendChild(b);
+          list.appendChild(li);
+        });
+        stage.appendChild(list);
+      }
+      else if (layout === "chapter") {
+        if (has(v.index)) stage.appendChild(el("ch-index", v.index));
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        stage.appendChild(headline(s(v.headline)));
+        stage.appendChild(el("rule"));
+        if (has(v.body)) stage.appendChild(el("body", v.body, "p"));
+      }
+      else if (layout === "compare") {
+        if (has(v.kicker)) stage.appendChild(el("kicker", v.kicker));
+        if (has(v.headline)) stage.appendChild(headline(s(v.headline)));
+        var cols = (Array.isArray(v.columns) ? v.columns : []).slice(0, 4);
+        var rows = (Array.isArray(v.rows) ? v.rows : []).slice(0, 6);
+        var anyThumb = cols.some(function (c) { return c && has(c.image); });
+        var tb = document.createElement("table"); tb.className = "cmp";
+        var thead = document.createElement("thead"); var hr = document.createElement("tr");
+        hr.style.animation = "fadeUp 0.6s cubic-bezier(.16,1,.3,1) 0.3s both";
+        hr.appendChild(el("rl", "", "th"));
+        cols.forEach(function (c) {
+          c = c || {};
+          var th = document.createElement("th");
+          if (anyThumb && has(c.image)) {
+            var im = document.createElement("img"); im.className = "thumb"; im.src = String(c.image);
+            if (has(c.image_focus)) im.style.objectPosition = String(c.image_focus);
+            th.appendChild(im);
+          }
+          th.appendChild(document.createTextNode(s(c.name)));
+          if (has(c.tag)) th.appendChild(el("ctag", c.tag, "span"));
+          hr.appendChild(th);
+        });
+        thead.appendChild(hr); tb.appendChild(thead);
+        var tbody = document.createElement("tbody");
+        rows.forEach(function (r, i) {
+          r = r || {};
+          var tr = document.createElement("tr");
+          tr.style.animation = "fadeUp 0.5s cubic-bezier(.16,1,.3,1) " + (0.5 + i * 0.12).toFixed(2) + "s both";
+          tr.appendChild(el("rl", r.label, "td"));
+          var vals = Array.isArray(r.values) ? r.values : [];
+          var best = Array.isArray(r.best) ? r.best : (r.best != null && r.best !== "" ? [r.best] : []);
+          cols.forEach(function (_, j) {
+            var td = el(best.indexOf(j) >= 0 ? "best" : "", vals[j] != null ? vals[j] : "—", "td");
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        tb.appendChild(tbody);
+        stage.appendChild(tb);
+        if (anyThumb) document.querySelectorAll(".cmp td").forEach(function (td) { td.style.fontSize = "27px"; td.style.padding = "11px 20px"; });
+        if (has(v.note)) stage.appendChild(el("note", v.note));
+      }
+      else if (layout === "vs") {
+        var vw = document.createElement("div"); vw.className = "vs-wrap";
+        [["l", v.left], ["r", v.right]].forEach(function (p) {
+          var d = p[1] || {};
+          var side = document.createElement("div"); side.className = "vs-side " + p[0];
+          if (has(d.image)) {
+            var md = document.createElement("div"); md.className = "media";
+            var im = document.createElement("img"); im.src = String(d.image);
+            if (has(d.image_focus)) im.style.objectPosition = String(d.image_focus);
+            md.appendChild(im); md.appendChild(el("scrim"));
+            side.appendChild(md);
+          }
+          var cap = document.createElement("div"); cap.className = "cap";
+          cap.appendChild(el("nm", d.name));
+          if (has(d.sub)) cap.appendChild(el("sb", d.sub));
+          side.appendChild(cap);
+          vw.appendChild(side);
+        });
+        root.insertBefore(vw, stage);
+        var badge = el("vs-badge", has(v.badge) ? v.badge : "VS");
+        root.insertBefore(badge, stage);
+        if (has(v.kicker)) {
+          var top = document.createElement("div"); top.className = "vs-top";
+          top.appendChild(el("kicker", v.kicker));
+          root.insertBefore(top, stage);
+        }
+        stage.remove();
+      }
+      else if (layout === "spec") {
+        var sw = document.createElement("div"); sw.className = "spec-wrap";
+        if (has(v.image)) {
+          var sm = document.querySelector(".media.full");
+          sm.classList.remove("full");
+          fillMedia(sm);
+          sw.appendChild(sm);
+        }
+        var sc2 = document.createElement("div"); sc2.className = "stage";
+        if (has(v.badge)) sc2.appendChild(el("badge", v.badge));
+        if (has(v.kicker)) sc2.appendChild(el("kicker", v.kicker));
+        sc2.appendChild(headline(s(v.headline)));
+        var specs = document.createElement("div"); specs.className = "specs";
+        (Array.isArray(v.specs) ? v.specs : []).slice(0, 6).forEach(function (it, i) {
+          it = it || {};
+          var row = document.createElement("div"); row.className = "sp";
+          row.style.animation = "fadeUp 0.5s cubic-bezier(.16,1,.3,1) " + (0.5 + i * 0.12).toFixed(2) + "s both";
+          row.appendChild(el("k", it.label, "span"));
+          row.appendChild(el("val", it.value, "span"));
+          specs.appendChild(row);
+        });
+        sc2.appendChild(specs);
+        sw.appendChild(sc2);
+        document.getElementById("root").insertBefore(sw, stage);
+        stage.remove(); stage = sc2;
+      }
+      else if (layout === "outro") {
+        if (has(v.logo)) {
+          var lg = document.createElement("img");
+          lg.className = "logo"; lg.src = String(v.logo); lg.alt = "";
+          stage.appendChild(lg);
+        } else {
+          stage.appendChild(el("mark"));
+        }
+        stage.appendChild(el("brand", v.brand != null ? v.brand : v.headline));
+        if (has(v.tagline)) stage.appendChild(el("tagline", v.tagline));
+        if (has(v.url)) stage.appendChild(el("url", v.url));
+        if (Array.isArray(v.socials) && v.socials.length) {
+          var sc = document.createElement("div"); sc.className = "socials";
+          v.socials.forEach(function (row) {
+            row = row || {};
+            var it = document.createElement("div"); it.className = "social";
+            if (has(row.plat)) it.appendChild(el("plat", row.plat, "span"));
+            var hv = row.handle != null ? row.handle : row.url;
+            var b = document.createElement("b"); b.textContent = hv != null ? String(hv) : "";
+            it.appendChild(b);
+            sc.appendChild(it);
+          });
+          stage.appendChild(sc);
+        }
+      }
+
+      // dates never belong in the footer (esp. the first frame of the video) —
+      // blank out any date-like value regardless of what the script supplies
+      var noDate = function (x) {
+        var t = s(x).trim();
+        if (!t) return "";
+        if (/\d{1,2}\s*[\/.\-]\s*\d{1,2}\s*[\/.\-]\s*\d{2,4}/.test(t)) return "";   // 6/9/2026, 06-09-26
+        if (/\d{4}\s*[\/.\-]\s*\d{1,2}\s*[\/.\-]\s*\d{1,2}/.test(t)) return "";       // 2026-09-06
+        if (/ngày\s+\d{1,2}/i.test(t)) return "";                                     // "ngày 6 tháng 9"
+        if (/\d{1,2}\s+tháng\s+\d{1,2}/i.test(t)) return "";
+        return t;
+      };
+      var footL = noDate(v.foot_left), footR = noDate(v.foot_right);
+      if (has(footL) || has(footR)) {
+        var f = document.querySelector(".foot");
+        f.hidden = false;
+        f.querySelector(".foot-l").textContent = footL;
+        f.querySelector(".foot-r").textContent = footR;
+      }
+
+      // auto-shrink a headline whose longest word overflows its column
+      document.querySelectorAll(".headline").forEach(function (hlEl) {
+        var txt = hlEl.textContent.trim();
+        if (!txt) return;
+        var avail = hlEl.offsetWidth || 880;
+        var cs = getComputedStyle(hlEl);
+        var cur = parseFloat(cs.fontSize);
+        var probe = document.createElement("span");
+        probe.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap;font-weight:" +
+          cs.fontWeight + ";font-family:" + cs.fontFamily + ";letter-spacing:" + cs.letterSpacing +
+          ";font-size:" + cur + "px;";
+        document.body.appendChild(probe);
+        var maxW = 0;
+        txt.split(/\s+/).forEach(function (word) { probe.textContent = word; if (probe.scrollWidth > maxW) maxW = probe.scrollWidth; });
+        document.body.removeChild(probe);
+        if (maxW > avail) hlEl.style.fontSize = Math.max(46, Math.floor(cur * avail / maxW)) + "px";
+      });
+    })();
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["main"] = { pause: function () {}, seek: function () {}, paused: function () { return true; } };
+  </script>
+</body>
+</html>

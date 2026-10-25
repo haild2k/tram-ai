@@ -1,0 +1,28 @@
+# Node / build
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+__pycache__/
+
+# Env (OMNIVOICE_ENDPOINT…) — mẫu ở .env.example
+.env
+.env.local
+
+# Credentials: KHÔNG bao giờ để trong repo — dùng $TRAM_AI_CREDS
+# (/home/haild/haild/Core/Scripts/upload_mxh/tram-ai)
+*credentials*.json
+*token*.json
+*.pickle
+client_secret*.json
+node.md
+
+# Tài nguyên lớn / sinh ra khi dựng video
+SFX/
+assets/sfx/
+templates/_dyn/
+videos/
+*.mp4
+*.mp3
+!tests/fixtures/*.mp3
