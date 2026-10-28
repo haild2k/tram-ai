@@ -46,6 +46,10 @@ Chỉ đổi truy vấn + nguồn:
 
 ## Bước 1 — chỉ thị gửi `tram-ai-template-video` (bổ sung cho 1c–1j)
 
+> **Style remotion** (user nói "style remotion"): bỏ qua cả mục này, làm Bước 1
+> theo [style-remotion.md](style-remotion.md), rồi quay lại **Sau Bước 1** như
+> file đó chỉ dẫn. Mục này chỉ dành cho style **template** (mặc định).
+
 Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 
 > - `aspect = "9:16"` (KHÔNG hỏi Step 2).
@@ -78,12 +82,12 @@ Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 
 1. `mv videos/_render/<slug>-<timestamp> videos/tram-ai/short/<DATE>/` (`mkdir -p`
    trước). Từ đây `outputDir` = thư mục mới.
-2. Viết `youtube.md` / `facebook.md` / `tiktok.md` theo `SKILL.md` mục **Kịch bản
-   đăng** (KHÔNG gọi `create-youtube-content`).
+2. Viết `youtube.md` / `facebook.md` / `tiktok.md` + bản tiếng Anh `youtube_en.md` /
+   `facebook_en.md` theo `SKILL.md` mục **Kịch bản đăng** (KHÔNG gọi `create-youtube-content`).
 3. Thumbnail: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --pick <N> [--focus "<x>% <y>%"]`
    (N = ảnh đã dùng cho hook). Lỗi → in lỗi, vẫn đi tiếp.
 4. `COVER_MS` theo `media-skill` Bước 5b.
-4b. Bộ file YouTube Studio (`youtube-studio/`: phụ đề VI/EN + `audio_en.mp3`)
+4b. Bộ file YouTube Studio (`youtube-studio/`: phụ đề VI/EN — tạm thời không sinh giọng EN)
    theo `SKILL.md` mục **Bộ file YouTube Studio**.
 5. Đăng **luôn, không hỏi**: YouTube → Facebook → TikTok theo `SKILL.md` mục **Đăng
    3 nền tảng**.

@@ -2,7 +2,7 @@
 """Upload video.mp4 + metadata (youtube.md) từ 1 outputDir lên kênh YouTube TRẠM AI.
 
 Bản copy của upload-youtube-video cho kênh Trạm AI. Credentials nằm NGOÀI repo,
-trong $TRAM_AI_CREDS (mặc định /home/haild/haild/Core/Scripts/upload_mxh/tram-ai):
+trong $TRAM_AI_CREDS (mặc định <repo>/credentials):
   youtube_client_secret.json   OAuth client (Desktop)
   youtube_token.pickle         token đã đăng nhập (scopes upload + readonly)
 Trước khi upload, script kiểm tra kênh đang đăng nhập đúng là Trạm AI
@@ -19,10 +19,11 @@ import pickle
 import re
 import sys
 
-CREDS_DIR = os.environ.get("TRAM_AI_CREDS", "/home/haild/haild/Core/Scripts/upload_mxh/tram-ai")
+CREDS_DIR = os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials")))
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
+    "https://www.googleapis.com/auth/youtube.force-ssl",  # phụ đề + localizations (youtube_i18n.py)
 ]
 TOKEN_FILE = os.path.join(CREDS_DIR, "youtube_token.pickle")
 CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, "youtube_client_secret.json")
@@ -48,7 +49,7 @@ def parse_youtube_md(md_path):
     return title, description, tags
 
 
-def get_credentials(client_secret_path):
+def get_credentials(client_secret_path, save=True):
     import google_auth_oauthlib.flow
     from google.auth.transport.requests import Request
 
@@ -57,6 +58,10 @@ def get_credentials(client_secret_path):
         with open(TOKEN_FILE, "rb") as f:
             creds = pickle.load(f)
 
+    # Token cũ thiếu scope mới (vd force-ssl) → xin đồng ý lại 1 lần, gộp vào cùng token
+    if creds and not set(SCOPES) <= set(creds.scopes or []):
+        print(f"Token thiếu quyền {sorted(set(SCOPES) - set(creds.scopes or []))} → cần đồng ý lại 1 lần.", flush=True)
+        creds = None
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
     elif not creds or not creds.valid:
@@ -65,10 +70,14 @@ def get_credentials(client_secret_path):
         )
         creds = flow.run_local_server(port=8090, open_browser=False, prompt="consent")
 
+    if save:
+        save_credentials(creds)
+    return creds
+
+
+def save_credentials(creds):
     with open(TOKEN_FILE, "wb") as f:
         pickle.dump(creds, f)
-
-    return creds
 
 
 def set_thumbnail(youtube, video_id, thumbnail_path):
@@ -106,7 +115,7 @@ def build_youtube_client(client_secret_path):
         sys.exit(1)
 
     print("Đang xác thực tài khoản Google...")
-    credentials = get_credentials(client_secret_path)
+    credentials = get_credentials(client_secret_path, save=False)  # chỉ lưu sau khi đúng kênh
     youtube = build("youtube", "v3", credentials=credentials)
     items = youtube.channels().list(part="snippet", mine=True).execute().get("items", [])
     ids = {c["id"]: c["snippet"]["title"] for c in items}
@@ -114,6 +123,7 @@ def build_youtube_client(client_secret_path):
         print(f"Lỗi: tài khoản đang đăng nhập là kênh {ids or '(không có kênh)'}, "
               f"KHÔNG phải Trạm AI ({EXPECT_CHANNEL}). Dừng, không đăng.")
         sys.exit(1)
+    save_credentials(credentials)
     print(f"Kênh: {', '.join(ids.values())}")
     return youtube
 

@@ -39,8 +39,9 @@ Chi tiết: [.claude/skills/tram-ai-skill/SKILL.md](.claude/skills/tram-ai-skill
 
 ## Credentials
 
-**Không nằm trong repo.** Mặc định đọc từ `TRAM_AI_CREDS=/home/haild/haild/Core/Scripts/upload_mxh/tram-ai`
-(YouTube client + token, Facebook Page token, TikTok client + token). Kiểm tra:
+Đặt trong `credentials/` ở gốc project (đã gitignore — **không commit**); override bằng
+`TRAM_AI_CREDS=<thư mục>`. Gồm `youtube_client_secret.json`, `youtube_token.pickle`,
+`facebook_credentials.json`, `tiktok/tiktok_credentials.json`, `tiktok/tiktok_token.json`. Kiểm tra:
 
 ```bash
 python3 .claude/skills/tram-ai-skill/scripts/check_platforms.py

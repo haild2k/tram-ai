@@ -4,7 +4,7 @@
   python3 .claude/skills/tram-ai-skill/scripts/check_platforms.py
 
 In 1 dòng / nền tảng: ✓ sẵn sàng hoặc ✗ + lý do. Exit code = số nền tảng lỗi.
-Credentials: $TRAM_AI_CREDS (mặc định /home/haild/haild/Core/Scripts/upload_mxh/tram-ai).
+Credentials: $TRAM_AI_CREDS (mặc định <repo>/credentials).
 """
 import datetime
 import json
@@ -15,7 +15,7 @@ import sys
 
 import requests
 
-CREDS = os.environ.get("TRAM_AI_CREDS", "/home/haild/haild/Core/Scripts/upload_mxh/tram-ai")
+CREDS = os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials")))
 HERE = os.path.dirname(os.path.abspath(__file__))
 YT_CHANNEL = "UC-OcFyd7wjGQ69ur92o6Rzg"
 FB_PAGE = "1430978420097668"
@@ -40,13 +40,22 @@ def youtube():
 
 def facebook():
     c = json.load(open(os.path.join(CREDS, "facebook_credentials.json")))
-    tok = c["user_access_token"]
-    pages = requests.get(f"{G}/me/accounts", params={"access_token": tok}, timeout=30).json()
-    if "error" in pages:
-        raise RuntimeError(pages["error"].get("message"))
-    page = next((p for p in pages.get("data", []) if p["id"] == c.get("target_page_id", FB_PAGE)), None)
-    if not page:
-        raise RuntimeError("token không quản lý Page Trạm AI")
+    target = c.get("target_page_id", FB_PAGE)
+    if c.get("page_access_token"):
+        tok = c["page_access_token"]
+        page = requests.get(f"{G}/me", params={"access_token": tok, "fields": "id,name"}, timeout=30).json()
+        if "error" in page:
+            raise RuntimeError(page["error"].get("message"))
+        if page.get("id") != target:
+            raise RuntimeError(f"page_access_token thuộc Page khác ({page.get('name')})")
+    else:
+        tok = c["user_access_token"]
+        pages = requests.get(f"{G}/me/accounts", params={"access_token": tok}, timeout=30).json()
+        if "error" in pages:
+            raise RuntimeError(pages["error"].get("message"))
+        page = next((p for p in pages.get("data", []) if p["id"] == target), None)
+        if not page:
+            raise RuntimeError("token không quản lý Page Trạm AI")
     d = requests.get(f"{G}/debug_token", params={"input_token": tok, "access_token": tok},
                      timeout=30).json().get("data", {})
     if "pages_manage_posts" not in d.get("scopes", []):

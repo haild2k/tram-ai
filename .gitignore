@@ -10,8 +10,8 @@ __pycache__/
 .env
 .env.local
 
-# Credentials: KHÔNG bao giờ để trong repo — dùng $TRAM_AI_CREDS
-# (/home/haild/haild/Core/Scripts/upload_mxh/tram-ai)
+# Credentials 3 nền tảng: nằm ở credentials/ (local, KHÔNG commit) — override bằng $TRAM_AI_CREDS
+credentials/
 *credentials*.json
 *token*.json
 *.pickle

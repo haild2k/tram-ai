@@ -9,7 +9,9 @@ Yêu cầu:
   pip install -r requirements.txt        (chạy trong thư mục skill này)
   facebook_credentials.json đặt cạnh script này:
     {
-      "user_access_token": "EAAB...",   # User Access Token (có quyền pages_show_list,
+      "page_access_token": "EAAB...",   # Page Access Token của Page (ưu tiên — token dài
+                                        #   hạn lấy từ user token dài hạn thì không hết hạn)
+      "user_access_token": "EAAB...",   # hoặc User Access Token (có quyền pages_show_list,
                                         #   pages_manage_posts, pages_read_engagement)
       "target_page_id": "1430978420097668"
     }
@@ -47,7 +49,7 @@ import requests
 SKILL_DIR = os.path.dirname(os.path.abspath(__file__))
 GRAPH_VERSION = "v19.0"
 CRED_FILE = os.path.join(
-    os.environ.get("TRAM_AI_CREDS", "/home/haild/haild/Core/Scripts/upload_mxh/tram-ai"),
+    os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials"))),
     "facebook_credentials.json",
 )  # Page Trạm AI (1430978420097668)
 
@@ -57,7 +59,7 @@ def load_credentials(path):
         print(f"Lỗi: Không tìm thấy file credentials tại '{path}'.")
         print("Tạo file với nội dung:")
         print('  {')
-        print('    "user_access_token": "<User Access Token>",')
+        print('    "page_access_token": "<Page Access Token>",   # hoặc "user_access_token"')
         print('    "target_page_id": "<Page ID>"')
         print('  }')
         print("Token cần quyền: pages_show_list, pages_manage_posts, pages_read_engagement.")
@@ -67,16 +69,23 @@ def load_credentials(path):
         data = json.load(f)
 
     user_token = data.get("user_access_token")
+    page_token = data.get("page_access_token")
     page_id = str(data.get("target_page_id") or "").strip()
-    if not user_token or not page_id:
-        print(f"Lỗi: '{path}' thiếu 'user_access_token' hoặc 'target_page_id'.")
+    if not (page_token or user_token) or not page_id:
+        print(f"Lỗi: '{path}' thiếu 'page_access_token'/'user_access_token' hoặc 'target_page_id'.")
         sys.exit(1)
-    return user_token, page_id
+    return user_token, page_token, page_id
 
 
 def parse_youtube_md(md_path):
-    """Trích title + description từ file youtube.md (skill create-youtube-content)."""
+    """Trích title + description từ youtube.md (có mục ## Mô tả) hoặc facebook.md dạng thuần."""
     text = open(md_path, "r", encoding="utf-8").read()
+
+    # facebook.md dạng văn bản thuần (copy dán được): dòng đầu = tiêu đề, còn lại = mô tả.
+    if not re.search(r"^##\s+", text, re.MULTILINE):
+        lines = text.strip().splitlines()
+        title = re.sub(r"^#\s+", "", lines[0].strip()) if lines else None
+        return title or None, "\n".join(lines[1:]).strip()
 
     title_match = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
     title = title_match.group(1).strip() if title_match else None
@@ -88,6 +97,20 @@ def parse_youtube_md(md_path):
 
     description = section("Mô tả (Description)")
     return title, description
+
+
+def check_page_token(page_token, target_page_id):
+    """Page token dùng thẳng — chỉ kiểm tra nó đúng là token của Page chỉ định."""
+    me = requests.get(f"https://graph.facebook.com/{GRAPH_VERSION}/me",
+                      params={"access_token": page_token, "fields": "id,name"}).json()
+    if "error" in me:
+        print(f"Lỗi page_access_token: {me['error'].get('message')}")
+        return None
+    if str(me.get("id")) != str(target_page_id):
+        print(f"page_access_token thuộc Page {me.get('name')} ({me.get('id')}), không phải {target_page_id}.")
+        return None
+    print(f"Dùng Page token: {me['name']} ({me['id']})")
+    return page_token
 
 
 def get_page_access_token(user_token, target_page_id):
@@ -240,7 +263,67 @@ def upload_reel(page_id, page_token, video_path, title, description, cover_path=
     return video_id
 
 
+RESUMABLE_MIN_MB = 50  # video lớn hơn → upload_phase start/transfer/finish (1 request nguyên file hay lỗi)
+
+
+def upload_video_resumable(page_id, page_token, video_path, title, description):
+    url = f"https://graph-video.facebook.com/{GRAPH_VERSION}/{page_id}/videos"
+    size = os.path.getsize(video_path)
+    start = requests.post(url, data={"access_token": page_token, "upload_phase": "start", "file_size": size}).json()
+    if "upload_session_id" not in start:
+        print(f"\nLỗi mở phiên upload: {json.dumps(start, ensure_ascii=False, indent=2)}")
+        sys.exit(1)
+    session, s, e = start["upload_session_id"], int(start["start_offset"]), int(start["end_offset"])
+    with open(video_path, "rb") as fh:
+        while s < e:
+            fh.seek(s)
+            chunk = fh.read(e - s)
+            for attempt in range(4):
+                try:
+                    r = requests.post(url, data={"access_token": page_token, "upload_phase": "transfer",
+                                                 "upload_session_id": session, "start_offset": s},
+                                      files={"video_file_chunk": ("chunk", chunk)}, timeout=600).json()
+                    break
+                except (requests.RequestException, ValueError) as ex:
+                    if attempt == 3:
+                        raise
+                    print(f"  thử lại đoạn {s}: {ex}")
+            if "start_offset" not in r:
+                print(f"\nLỗi tải đoạn {s}: {json.dumps(r, ensure_ascii=False, indent=2)}")
+                sys.exit(1)
+            s, e = int(r["start_offset"]), int(r["end_offset"])
+            print(f"  đã tải {s / size * 100:.0f}%")
+    return requests.post(url, data={"access_token": page_token, "upload_phase": "finish", "upload_session_id": session,
+                                    "title": title or "", "description": description or ""}).json(), session
+
+
 def upload_video(page_id, page_token, video_path, title, description, cover_path=None):
+    if os.path.getsize(video_path) > RESUMABLE_MIN_MB * 1024 * 1024:
+        print(f"Video > {RESUMABLE_MIN_MB} MB → tải lên theo từng phần (resumable)...")
+        resp, session = upload_video_resumable(page_id, page_token, video_path, title, description)
+        if resp.get("success"):
+            # finish không trả video_id (session id ≠ video id) → chờ video hiện trên Page theo tiêu đề
+            video_id = resp.get("video_id")
+            print("Facebook đã nhận đủ file, đang chờ xử lý xong (có thể ~5–10 phút)...")
+            for _ in range(60):
+                if video_id:
+                    break
+                time.sleep(10)
+                vids = requests.get(f"https://graph.facebook.com/{GRAPH_VERSION}/{page_id}/videos",
+                                    params={"access_token": page_token, "fields": "id,title", "limit": 5}).json()
+                video_id = next((v["id"] for v in vids.get("data", []) if v.get("title") == (title or "")), None)
+            if not video_id:
+                print(f"\nĐã tải lên (phiên {session}) nhưng chưa thấy video trên Page sau 10 phút — kiểm tra tay.")
+                return None
+            print("\nĐăng video thành công!")
+            print(f"➜ Video ID: {video_id}")
+            print(f"➜ URL Video trên Page: https://www.facebook.com/{page_id}/videos/{video_id}")
+            if cover_path:
+                set_video_thumbnail(video_id, page_token, cover_path, retries=6, delay=15)
+            return video_id
+        print(f"\nLỗi kết thúc upload: {json.dumps(resp, ensure_ascii=False, indent=2)}")
+        sys.exit(1)
+
     url = f"https://graph-video.facebook.com/{GRAPH_VERSION}/{page_id}/videos"
     payload = {
         "title": title or "",
@@ -342,7 +425,7 @@ def main():
         print("Lỗi: chưa có tiêu đề (thiếu youtube.md hoặc --title).")
         sys.exit(1)
 
-    user_token, page_id = load_credentials(args.credentials)
+    user_token, page_token, page_id = load_credentials(args.credentials)
 
     tmpdir = tempfile.mkdtemp(prefix="fb_upload_")
     cover_path, cover_src = resolve_cover(args, video_path, tmpdir)
@@ -359,7 +442,10 @@ def main():
     if args.dry_run:
         return
 
-    page_token = get_page_access_token(user_token, page_id)
+    if page_token:
+        page_token = check_page_token(page_token, page_id)
+    else:
+        page_token = get_page_access_token(user_token, page_id)
     if not page_token:
         sys.exit(1)
 

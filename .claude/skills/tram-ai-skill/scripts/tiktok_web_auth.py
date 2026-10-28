@@ -5,7 +5,7 @@ Redirect = trang github.io trong tiktok_credentials.json; trang đó hiện URL 
   python3 tiktok_web_auth.py complete '<URL>' -> đổi code lấy token, lưu tiktok_token.json
 """
 import json, os, secrets, sys, time, urllib.parse, requests
-D = os.path.join(os.environ.get("TRAM_AI_CREDS", "/home/haild/haild/Core/Scripts/upload_mxh/tram-ai"), "tiktok")
+D = os.path.join(os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials"))), "tiktok")
 cred = json.load(open(os.path.join(D, "tiktok_credentials.json")))
 PENDING = os.path.join(D, ".tiktok_web_pending.json")
 SCOPES = "user.info.basic,video.publish"

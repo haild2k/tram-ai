@@ -13,8 +13,11 @@ clips/scene-*-fit.mp4 trước nó; lời Việt dài bằng voice/scene-<id>.mp
   subtitles_vi.srt, subtitles_en.srt, audio_en.mp3 (dài đúng bằng video.mp4),
   voice_en/scene-<id>.mp3 (từng cảnh, đã fit)
 
+--no-voice: chỉ sinh 2 file .srt (không gọi TTS, không có audio_en.mp3 / voice_en/);
+  phụ đề Anh lấy đúng mốc của lời Việt, en_tts không bắt buộc.
+
 Dùng:
-  python3 make_youtube_studio.py --dir <outputDir> [--voice minh_quan]
+  python3 make_youtube_studio.py --dir <outputDir> [--no-voice] [--voice minh_quan]
       [--endpoint http://14.178.142.29:13562] [--max-tempo 1.2]
 """
 import argparse
@@ -115,12 +118,14 @@ def main():
     ap.add_argument("--voice", default="minh_quan")
     ap.add_argument("--endpoint", default=os.environ.get("OMNIVOICE_ENDPOINT", "http://14.178.142.29:13562"))
     ap.add_argument("--max-tempo", type=float, default=1.2)
+    ap.add_argument("--no-voice", action="store_true", help="chỉ sinh phụ đề, không sinh giọng tiếng Anh")
     a = ap.parse_args()
 
     d = a.dir
     studio = os.path.join(d, "youtube-studio")
     scenes = json.load(open(os.path.join(studio, "scenes.json"), encoding="utf-8"))
-    os.makedirs(os.path.join(studio, "voice_en"), exist_ok=True)
+    if not a.no_voice:
+        os.makedirs(os.path.join(studio, "voice_en"), exist_ok=True)
 
     video_len = dur(os.path.join(d, "video.mp4"))
     starts, windows, t = {}, {}, 0.0
@@ -135,6 +140,10 @@ def main():
         sid, st, win = sc["id"], starts[sc["id"]], windows[sc["id"]]
         vi_len = dur(os.path.join(d, "voice", f"scene-{sid}.mp3"))
         vi_cues += cues(sc["vi"], st, vi_len)
+        if a.no_voice:
+            en_cues += cues(sc["en"], st, vi_len)
+            print(f"{sid}: start {st:6.2f}s  cảnh {win:5.2f}s  VI {vi_len:5.2f}s")
+            continue
 
         raw = os.path.join(studio, "voice_en", f"scene-{sid}.raw.mp3")
         fit = os.path.join(studio, "voice_en", f"scene-{sid}.mp3")
@@ -155,6 +164,9 @@ def main():
 
     write_srt(os.path.join(studio, "subtitles_vi.srt"), vi_cues)
     write_srt(os.path.join(studio, "subtitles_en.srt"), en_cues)
+    if a.no_voice:
+        print(f"video {video_len:.2f}s · chỉ phụ đề (--no-voice)")
+        return
 
     cmd = ["ffmpeg", "-loglevel", "error", "-y"]
     for p, _ in inputs:

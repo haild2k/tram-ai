@@ -73,10 +73,16 @@ def build(d):
 def inject(md_path, block):
     text = open(md_path, encoding="utf-8").read()
     m = re.search(r"^##\s+Mô tả \(Description\)\s*$(.*?)(?=^##\s+|\Z)", text, re.M | re.S)
-    if not m:
+    if m:
+        start, end = m.start(1), m.end(1)
+    elif not re.search(r"^##\s+", text, re.M):
+        # facebook.md dạng thuần: dòng đầu là tiêu đề, phần còn lại là mô tả
+        nl = text.find("\n")
+        start, end = (len(text) if nl < 0 else nl), len(text)
+    else:
         print(f"  ! {md_path}: không thấy mục '## Mô tả (Description)' — bỏ qua")
         return
-    body = m.group(1)
+    body = text[start:end]
     # idempotent: drop a previously injected block
     body = re.sub(rf"\n{re.escape(BLOCK_HEAD)}\n(?:.+\n?)+", "\n", body)
     anchor = re.search(r"^(Theo dõi Trạm AI|#\S)", body, re.M)
@@ -84,7 +90,7 @@ def inject(md_path, block):
         body = body[:anchor.start()].rstrip() + "\n\n" + block + "\n\n" + body[anchor.start():]
     else:
         body = body.rstrip() + "\n\n" + block + "\n\n"
-    text = text[:m.start(1)] + body + text[m.end(1):]
+    text = text[:start] + body + text[end:]
     open(md_path, "w", encoding="utf-8").write(text)
     print(f"  ✓ đã chèn mốc thời gian vào {md_path}")
 

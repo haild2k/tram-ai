@@ -18,6 +18,9 @@ chương, ảnh + crop logo, template động 16:9 `template-scaffold-long.html`
 
 ## Ba loại video AI
 
+> **Loại 4 — `paper`** (giải thích 1 paper trending, kèm repo nếu có): làm theo
+> [long-paper.md](long-paper.md); không hỏi loại khi user đã đưa link paper.
+
 Ghi `TYPE` (`tin-ai` / `cong-cu` / `chu-de`). User chưa nói loại nào → hỏi đúng 1
 câu: "Làm loại nào: 1 tin AI tuần, 2 so sánh công cụ AI, hay 3 chủ đề AI (nêu chủ
 đề)?" rồi dừng chờ. Mọi tham số khác (`DAYS=7`, số mục nổi bật 4, thời lượng) dùng
@@ -72,6 +75,8 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
   đổi theo khu vực; kiểm tra trang chính thức trước khi đăng ký."), rồi
   `chapters.py --dir <outputDir> --inject youtube.md --inject facebook.md`.
   Mô tả YouTube ≤ 5.000 ký tự.
+  Sau đó viết `youtube_en.md` + `facebook_en.md` (ánh xạ tiếng Anh, có mốc chương
+  `⏱ Chapters:` dịch tên chương) theo SKILL.md.
 - **Bước 11**: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --image <outputDir>/source-images/img-hook.jpg [--title "<≤45 ký tự>"]`.
 - **Bước 11b (DUYỆT)**: giữ nguyên mẫu bản duyệt, đổi dòng cuối thành
   `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook + TikTok, hoặc ghi rõ cần sửa gì.`

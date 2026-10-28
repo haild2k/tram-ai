@@ -4,7 +4,7 @@
 Bản copy của upload-tiktok-video cho kênh Trạm AI. Credentials nằm NGOÀI repo:
   $TRAM_AI_CREDS/tiktok/tiktok_credentials.json   client_key/secret + redirect_uri (github.io)
   $TRAM_AI_CREDS/tiktok/tiktok_token.json         token (tự refresh)
-(TRAM_AI_CREDS mặc định /home/haild/haild/Core/Scripts/upload_mxh/tram-ai)
+(TRAM_AI_CREDS mặc định <repo>/credentials)
 
 App TikTok "Trạm AI" đang ở Sandbox (chưa audit) → chỉ đăng được SELF_ONLY.
 TikTok KHÔNG nhận redirect localhost cho app này → đăng nhập lại (khi refresh
@@ -37,7 +37,7 @@ try:
 except Exception:
     pass
 
-CREDS_DIR = os.path.join(os.environ.get("TRAM_AI_CREDS", "/home/haild/haild/Core/Scripts/upload_mxh/tram-ai"), "tiktok")
+CREDS_DIR = os.path.join(os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials"))), "tiktok")
 EXPECT_USERNAME = "tram.ai.vn"
 CRED_FILE = os.path.join(CREDS_DIR, "tiktok_credentials.json")
 TOKEN_FILE = os.path.join(CREDS_DIR, "tiktok_token.json")
