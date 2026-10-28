@@ -41,10 +41,11 @@ mục **Kịch bản đăng** + **Đăng 3 nền tảng** bên dưới (CÓ đă
 | --- | --- |
 | `metadata.channel` trong `script.json` | `"Trạm AI"` |
 | `foot_left` (hook + cảnh có footer) | `"Trạm AI"` |
-| Outro `brand` / `logo` | `"Trạm AI"` / `"assets/logo.png"` — copy `.claude/skills/tram-ai-skill/assets/logo.png` vào `<TPL>/assets/logo.png` |
+| Outro `brand` / `logo` | `"Trạm AI"` / `"assets/logo.png"` — copy `.claude/skills/tram-ai-skill/assets/logo-round.png` (logo tròn, nền ngoài hình tròn đã xoá — trong suốt) vào `<TPL>/assets/logo.png`. KHÔNG dùng `assets/logo.png` gốc (nền vuông) cho outro |
 | Outro `tagline` | mời theo dõi để cập nhật AI mỗi ngày (short) / bản tin AI tuần sau (long) |
 | Outro `socials[]` | `{plat:"YouTube",handle:"youtube.com/@tram-ai"}`, `{plat:"TikTok",handle:"tiktok.com/@tram.ai.vn"}`, `{plat:"Facebook",handle:"Trạm AI"}` |
 | Màu template (`--bg1 --bg2 --accent1 --accent2`) | `#0e1230` · `#1d1d4f` · `#6f8cff` (xanh tím mạch điện) · `#f2b254` (vàng ánh đèn) — lấy từ logo |
+| Giọng đọc TTS (`voice.name`) | **luôn `minh_quan`** — cả short lẫn long, mọi tông nội dung. KHÔNG chọn giọng theo bảng tông của tài liệu nền (`vira`/`dori`/`jett`/`kaci`). Server `/health` không có `minh_quan` → báo user và dừng, không tự đổi giọng khác |
 | Thumbnail | `scripts/compose_thumbnail.py` của skill này (thanh accent vàng Trạm AI) |
 | Hashtag tên kênh | `#tramai` (YouTube lowercase) · `#TramAI` (Facebook/TikTok) |
 | Ảnh có logo/branding của **chính Trạm AI** | KHÔNG crop |
@@ -55,7 +56,7 @@ Khối CTA cuối description (YouTube + Facebook) — đúng nguyên văn, đú
 Theo dõi Trạm AI để cập nhật trí tuệ nhân tạo mỗi ngày:
 👉 YouTube: https://www.youtube.com/@tram-ai
 👉 TikTok: https://www.tiktok.com/@tram.ai.vn
-👉 Facebook: https://www.facebook.com/1430978420097668
+👉 Facebook: https://www.facebook.com/tram.ai.channel
 ```
 
 (Câu mở có thể đổi cho hợp ngữ cảnh; dòng bắt đầu bằng `Theo dõi Trạm AI` phải
@@ -132,15 +133,21 @@ Nguồn tham khảo: <tên 1>, <tên 2>, <tên 3>
 ```
 
 - Title: short ≤ 65 ký tự; long ≤ 100 ký tự và nêu đủ tên các mục nổi bật.
-- Hashtag (lowercase, không dấu): short `#shorts #trending #xuhuongyoutube #trend #trendingshorts`
-  → 2–4 tag chủ đề (`#ai #trituenhantao #chatgpt #congngheai`…) → `#tramai` cuối.
-  Long: bỏ mọi `#shorts`/`trendingshorts`; `#trending #xuhuongyoutube #trend` →
-  tag bản tin (`#tinai #tinaituan #trituenhantao #congngheai #ai`) → `#tramai`;
-  **tổng ≤ 15**.
-- Tags 12–20, lowercase, ≤ 480 ký tự; luôn có `trending, xuhuongyoutube, trend`
-  (+ `trendingshorts` nếu short), `trạm ai` gần cuối; từ khoá người Việt hay gõ:
-  `tin ai, trí tuệ nhân tạo, ai mới nhất, công cụ ai, chatgpt, ai là gì` + tên
-  mô hình/sản phẩm trong video.
+- **CẤM tag/hashtag chung chung, không gắn với nội dung** (ở cả 3 nền tảng):
+  `#shorts #trending #xuhuongyoutube #trend #trendingshorts #xuhuong #fyp #viral
+  #foryou #reels`… và mọi biến thể. Chúng không giúp người xem tìm đúng video.
+  Thắng mọi chỉ thị "luôn có `#shorts` / `trendingshorts` / `#xuhuong #fyp`" của
+  tài liệu nền. (YouTube tự nhận Short theo khung dọc ≤ 3 phút; không cần `#shorts`.)
+- Hashtag (lowercase, không dấu), **3–6 cái, cụ thể theo nội dung**: tên sản
+  phẩm/mô hình (`#gpt61terra`), hãng (`#openai`), sản phẩm liên quan (`#chatgpt`),
+  1–2 chủ đề rộng hơn nhưng vẫn đúng mảng (`#trituenhantao`, `#tinai`) →
+  `#tramai` cuối. Long: tag bản tin (`#tinai #tinaituan`) + tên các mục nổi bật;
+  **tổng ≤ 10**.
+- Tags 12–20, lowercase, ≤ 480 ký tự, **chỉ từ khoá cụ thể** người xem thật sự
+  gõ để tìm nội dung này: tên mô hình/sản phẩm (nhiều cách viết: `gpt-6.1 terra,
+  gpt 6.1 terra`), hãng, tính năng chính trong video (`computer use, giá api`),
+  câu tìm kiếm tiếng Việt (`gpt-6.1 terra là gì, openai ra mô hình mới`), mảng
+  chủ đề (`tin ai, trí tuệ nhân tạo`) → `trạm ai, tram ai` cuối.
 
 **`facebook.md`** — cùng cấu trúc (`#` title + `## Mô tả (Description)`):
 short = Reel (hook 1–2 câu, ngắn); long = video thường (dài hơn, có mốc chương).
@@ -153,40 +160,48 @@ Hashtag 3–5: chủ đề trước, `#TramAI` gần cuối. CTA đúng khối T
 
 <tuỳ chọn 1 câu chốt; long: "Bản đầy đủ có trên YouTube Trạm AI.">
 
-#xuhuong #fyp #<chủ đề1> #<chủ đề2> #TramAI
+#<sản phẩm> #<hãng> #<chủ đề> #TramAI
 ```
 
-Tối đa 5 hashtag, `#xuhuong #fyp` đầu tiên, `#TramAI` cuối cùng.
+3–5 hashtag cụ thể theo nội dung (KHÔNG `#xuhuong #fyp` hay tag chung chung khác),
+`#TramAI` cuối cùng.
 
 Tự kiểm tra: 3 file tồn tại; CTA đúng 3 link Trạm AI, không có link/kênh nào
 khác; hashtag đúng thứ tự.
 
-## Output bổ sung cho tiếng Anh
+## Bộ file YouTube Studio (phụ đề VI/EN + giọng EN) — LUÔN sinh
 
-Mặc định skill vẫn tạo nội dung chính bằng tiếng Việt cho kênh Trạm AI. Khi cần
-phục vụ thêm cho tiếng Anh, output phải bổ sung các file sau trong cùng `outputDir`:
+Video đăng bằng tiếng Việt, nhưng YouTube có thêm phụ đề + bản âm thanh tiếng
+Anh. Sau khi render xong (short lẫn long), luôn sinh thư mục con
+`<outputDir>/youtube-studio/`:
 
-- `subtitles_en.srt` — phụ đề tiếng Anh đầy đủ của video
-- `audio_en.mp3` — audio giọng nói tiếng Anh tương ứng với nội dung video
+| File | Nội dung |
+| --- | --- |
+| `scenes.json` | nguồn: list `{id, vi, en, en_tts}` mỗi cảnh — `vi` phụ đề Việt (số dạng đẹp, KHÔNG dùng `voiceText` đọc-ra-chữ), `en` phụ đề Anh, `en_tts` lời đọc Anh (số viết ra chữ, `Trạm AI` → `Tram AI`) |
+| `subtitles_vi.srt` · `subtitles_en.srt` | phụ đề có mốc thời gian, khớp từng cảnh |
+| `audio_en.mp3` | giọng đọc tiếng Anh, giọng `minh_quan`, dài đúng bằng `video.mp4` |
+| `metadata_en.md` | tiêu đề (`#`) + mô tả tiếng Anh (dịch `youtube.md`, giữ khối CTA 3 link, hashtag tiếng Anh cụ thể) |
+| `README.md` | hướng dẫn upload YouTube Studio (bên dưới) |
+| `voice_en/` | lời Anh từng cảnh (trung gian) |
 
-Các file này có thể được sinh đồng thời với bản Việt, nhưng không được thay thế
-nội dung chính tiếng Việt. Mục tiêu cuối là có đủ tài liệu để cài đặt lên
-YouTube Studio theo mục dưới đây.
+Cách làm: viết `scenes.json` (dịch sát nghĩa, không thêm số liệu ngoài
+`script.json`); `en_tts` phải **ngắn hơn** lời Việt — tiếng Anh ~3,2 từ/giây,
+mỗi cảnh ≤ `3,2 × (thời lượng cảnh − 0,4)` từ. Rồi chạy:
 
-### Cài đặt vào YouTube Studio
+```bash
+python3 .claude/skills/tram-ai-skill/scripts/make_youtube_studio.py --dir <outputDir>
+```
 
-Sau khi đã có file `subtitles_en.srt` và file âm thanh `audio_en.mp3`:
+Script đo mốc cảnh từ `clips/scene-*-fit.mp4`, gọi TTS remote (`minh_quan`), đặt
+lời Anh đúng đầu mỗi cảnh, tăng tốc nhẹ (≤ ×1,2) nếu hơi dài, ghép thành
+`audio_en.mp3` và sinh 2 file `.srt`. Thoát mã 1 + `CẢNH BÁO <id>` khi cảnh nào
+cần > ×1,2 → rút gọn `en_tts` cảnh đó rồi chạy lại (TTS cũ được cache trong
+`voice_en/*.raw.mp3`; xoá file raw của cảnh đã sửa để sinh lại).
 
-1. Vào **YouTube Studio** > Chọn video đã đăng/chuẩn bị đăng.
-2. Bên thanh công cụ trái, chọn **Phụ đề (Subtitles)**: Thêm ngôn ngữ **Tiếng Anh**.
-3. Nhập bản dịch **Tiêu đề & Mô tả**.
-4. Nhấn **Tải tệp lên (Upload file)** > Chọn file `subtitles_en.srt`.
-5. Trong phần chỉnh sửa video, tìm mục **Bản âm thanh (Audio tracks)**: Nhấn **Thêm (Add)** > Chọn ngôn ngữ là **Tiếng Anh (English)**.
-6. Tải file `audio_en.mp3` lên.
-
-Mục tiêu cuối của skill là đảm bảo video chính tiếng Việt vẫn chạy đúng trên kênh,
-đồng thời có sẵn bản phụ đề và bản âm thanh tiếng Anh để cài đặt vào YouTube Studio
-một cách nhanh chóng và đúng chuẩn.
+Upload trong YouTube Studio (ghi vào `README.md`):
+1. Phụ đề → dòng **Tiếng Việt** → Tải tệp lên → *Có thời gian* → `subtitles_vi.srt`.
+2. **Thêm ngôn ngữ** → Tiếng Anh: tải `subtitles_en.srt`; dán tiêu đề + mô tả từ `metadata_en.md`.
+3. Chỉnh sửa video → **Bản âm thanh** → Thêm → Tiếng Anh → `audio_en.mp3`.
 
 ## Đăng 3 nền tảng (sau Bước 0 ✓; long chỉ sau khi user duyệt)
 

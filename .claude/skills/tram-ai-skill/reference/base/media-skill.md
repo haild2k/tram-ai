@@ -306,7 +306,7 @@ sai, không thổi phồng — như mô tả trong `create-youtube-content`).
 Theo dõi Trạm AI để cập nhật trí tuệ nhân tạo mỗi ngày:
 👉 YouTube: https://www.youtube.com/@tram-ai
 👉 TikTok: https://www.tiktok.com/@tram.ai.vn
-👉 Facebook: https://www.facebook.com/1430978420097668
+👉 Facebook: https://www.facebook.com/tram.ai.channel
 
 [dòng hashtag: 3–5 hashtag, 2–4 hashtag chủ đề trước, `#TramAI` (tên kênh) đặt
 gần cuối cùng. Facebook dùng ít hashtag hơn YouTube — không nhồi #Shorts.]

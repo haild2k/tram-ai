@@ -55,7 +55,7 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
   cho hook. Phải đúng **phiên bản** (ảnh GPT-4o cho tin GPT-5 là lỗi nặng). Crop
   logo **báo / kênh khác**; logo hãng AI là chủ thể → giữ.
 - **Bước 4 (template)**: 4 biến màu Trạm AI (`--bg1:#0e1230; --bg2:#1d1d4f;
-  --accent1:#6f8cff; --accent2:#f2b254`); `cp .claude/skills/tram-ai-skill/assets/logo.png <TPL>/assets/logo.png`
+  --accent1:#6f8cff; --accent2:#f2b254`); `cp .claude/skills/tram-ai-skill/assets/logo-round.png <TPL>/assets/logo.png`
 - **Bước 5 (`script.json`)**: `metadata.channel = "Trạm AI"`; `foot_left = "Trạm AI"`;
   outro theo bảng Thương hiệu (`logo: "assets/logo.png"`, tagline mời xem bản tin
   AI tuần sau). Hook = ảnh ghép (`compose_collage.py` **của skill này**) các mục

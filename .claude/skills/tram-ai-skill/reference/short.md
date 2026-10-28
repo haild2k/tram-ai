@@ -52,11 +52,12 @@ Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 > - `metadata.channel = "Trạm AI"`. Mọi `foot_left = "Trạm AI"`.
 > - **Step 5** (template): sau khi copy scaffold, đổi đúng 4 biến màu:
 >   `--bg1:#0e1230; --bg2:#1d1d4f; --accent1:#6f8cff; --accent2:#f2b254;`
->   rồi `cp .claude/skills/tram-ai-skill/assets/logo.png <TPL>/assets/logo.png`.
+>   rồi `cp .claude/skills/tram-ai-skill/assets/logo-round.png <TPL>/assets/logo.png`.
 > - **Outro**: `brand: "Trạm AI"`, `logo: "assets/logo.png"`, `tagline` mời theo
 >   dõi Trạm AI để cập nhật AI mỗi ngày, `socials` = 3 kênh Trạm AI (bảng Thương
 >   hiệu). KHÔNG dùng `assets/logo.svg`.
-> - Giọng: theo bảng tông của `media-remote-skill` 1b; tin AI mặc định `vira`.
+> - Giọng: **luôn `voice.name: "minh_quan"`** — bỏ qua bảng tông của
+>   `media-remote-skill` 1b (xem bảng Thương hiệu của `SKILL.md`).
 > - **Quy tắc TTS cho thuật ngữ AI** (bổ sung 1j):
 >
 >   | Hiển thị | `voiceText` |
@@ -82,6 +83,8 @@ Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 3. Thumbnail: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --pick <N> [--focus "<x>% <y>%"]`
    (N = ảnh đã dùng cho hook). Lỗi → in lỗi, vẫn đi tiếp.
 4. `COVER_MS` theo `media-skill` Bước 5b.
+4b. Bộ file YouTube Studio (`youtube-studio/`: phụ đề VI/EN + `audio_en.mp3`)
+   theo `SKILL.md` mục **Bộ file YouTube Studio**.
 5. Đăng **luôn, không hỏi**: YouTube → Facebook → TikTok theo `SKILL.md` mục **Đăng
    3 nền tảng**.
 6. Báo kết quả theo `SKILL.md`, thêm các dòng tóm tắt của `media-remote-skill`

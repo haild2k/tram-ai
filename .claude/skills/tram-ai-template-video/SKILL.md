@@ -189,7 +189,7 @@ Quy tắc slot:
 - `logo` (chỉ layout `outro`): đường dẫn **tương đối** tới file logo đã copy vào
   `<TPL>/assets/` (vd `"assets/logo.png"`). Có `logo` thì frame cuối hiện logo kênh
   thay cho khối gradient mặc định. Nếu user đưa đường dẫn logo → copy vào `<TPL>/assets/`.
-  Logo kênh Trạm AI: `assets/logo.png` trong `.claude/skills/tram-ai-skill/assets/`.
+  Logo kênh Trạm AI: `assets/logo-round.png` trong `.claude/skills/tram-ai-skill/assets/` (logo tròn, nền ngoài hình tròn trong suốt) — copy thành `<TPL>/assets/logo.png`.
 - `figure`: giữ định dạng số đẹp cho MÀN HÌNH (`"82%"`, `"5.5"`, `"1M"`).
 - `items[].icon`: 1 emoji hợp ý (✅ ⚠️ 🚫 📈 💡 🔒 🚀 …).
 
@@ -212,19 +212,9 @@ Quy tắc slot:
 }
 ```
 
-- **`voice.name`** = 1 giọng trong `PROJECTS/OmniVoice/voice_library/` — chọn cho
-  **hợp tông nội dung tổng quan** (đọc `PROJECTS/OmniVoice/voice_library/note.md`
-  để có mô tả mới nhất; nếu thư mục trống thì bỏ `name`, server dùng giọng mặc định):
-
-  | `name` | Giọng | Hợp nội dung |
-  | --- | --- | --- |
-  | `vira` | nam, tự tin, giọng trung | **mặc định** — tin tức, phân tích, chủ đề trung tính |
-  | `dori` | nam, hoạt bát, trầm | thể thao, giải trí, chủ đề sôi động / hào hứng |
-  | `jett` | nam, khàn, giọng trầm | chủ đề nghiêm túc, điều tra, kịch tính / nặng nề |
-  | `kaci` | nữ, tươi vui, giọng trung | đời sống, mẹo vặt, chủ đề nhẹ nhàng / tích cực |
-
-  Nếu được gọi từ `media-skill` và orchestrator đã chỉ định `voice.name` → dùng đúng
-  giá trị đó, không tự đổi.
+- **`voice.name`** = **luôn `"minh_quan"`** (kênh Trạm AI chỉ dùng giọng này, mọi
+  tông nội dung). KHÔNG chọn giọng khác (`vira`/`dori`/`jett`/`kaci`…), kể cả khi
+  tài liệu nền hay orchestrator gợi ý theo tông.
 
 - Mỗi scene: `{ "id", "type", "voiceText", "templateId": "_dyn/<slug>-<timestamp>", "inputs": { "layout": "...", ... } }`.
   **Mọi scene dùng chung một `templateId`** (thư mục động vừa tạo) — chỉ khác `inputs`.
