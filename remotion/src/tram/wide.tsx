@@ -199,7 +199,14 @@ const SOCIALS = [
   { plat: "Facebook", handle: "facebook.com/tram.ai.channel" },
 ];
 
-export const OutroWide: React.FC = () => {
+/** Bản tiếng Anh dùng kênh YouTube riêng. */
+export const SOCIALS_EN = SOCIALS.map((s) => (s.plat === "YouTube" ? { ...s, handle: "youtube.com/@tram-ai-channel" } : s));
+
+export const OutroWide: React.FC<{ brand?: string; tagline?: string; socials?: typeof SOCIALS }> = ({
+  brand = "Trạm AI",
+  tagline = "Theo dõi để cập nhật trí tuệ nhân tạo mỗi ngày",
+  socials = SOCIALS,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const logo = enter(frame, fps, 0, 0.9);
@@ -212,13 +219,13 @@ export const OutroWide: React.FC = () => {
         />
         <div style={{ flex: 1 }}>
           <WH p={enter(frame, fps, 0.4)} size={104}>
-            Trạm AI
+            {brand}
           </WH>
           <div style={{ ...rise(enter(frame, fps, 0.7)), fontSize: 40, fontWeight: 600, color: C.muted, marginTop: 14 }}>
-            Theo dõi để cập nhật trí tuệ nhân tạo mỗi ngày
+            {tagline}
           </div>
           <div style={{ marginTop: 46, display: "flex", gap: 18 }}>
-            {SOCIALS.map((s, i) => (
+            {socials.map((s, i) => (
               <div
                 key={s.plat}
                 style={{
@@ -231,7 +238,8 @@ export const OutroWide: React.FC = () => {
                 }}
               >
                 <div style={{ fontSize: 26, fontWeight: 800, color: C.accent2 }}>{s.plat}</div>
-                <div style={{ fontSize: 25, fontWeight: 600, marginTop: 4, whiteSpace: "nowrap" }}>{s.handle}</div>
+                {/* Link kênh tiếng Anh dài hơn: chữ nhỏ lại để hàng thẻ không tràn lề phải */}
+                <div style={{ fontSize: socials === SOCIALS ? 25 : 23, fontWeight: 600, marginTop: 4, whiteSpace: "nowrap" }}>{s.handle}</div>
               </div>
             ))}
           </div>

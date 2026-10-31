@@ -65,13 +65,15 @@ export const defineShort = ({
   slug,
   scenes,
   voiceSec,
+  outro = Outro,
 }: {
   id: string;
   slug: string;
   scenes: SceneDef[];
   voiceSec: Record<string, number>;
+  outro?: React.FC;
 }): React.FC => {
-  const all = [...scenes, { id: "outro", C: Outro }];
+  const all = [...scenes, { id: "outro", C: outro }];
   const { total } = timeline(
     all.map((s) => s.id),
     voiceSec,

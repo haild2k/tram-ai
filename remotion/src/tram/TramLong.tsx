@@ -11,13 +11,15 @@ export const defineLong = ({
   slug,
   scenes,
   voiceSec,
+  outro = OutroWide,
 }: {
   id: string;
   slug: string;
   scenes: SceneDef[];
   voiceSec: Record<string, number>;
+  outro?: React.FC;
 }): React.FC => {
-  const all = [...scenes, { id: "outro", C: OutroWide }];
+  const all = [...scenes, { id: "outro", C: outro }];
   const { total } = timeline(
     all.map((s) => s.id),
     voiceSec,

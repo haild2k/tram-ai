@@ -1,0 +1,130 @@
+{
+  "_note": "Danh sách kênh theo dõi theo từng ngách. Bổ sung kênh mới phát hiện ở bước search vào đúng ngách. role: home = kênh của mình; vn = đối thủ Việt; source = kênh nguồn tiếng Anh để Việt hoá. news_sources: trang tin để tìm chủ đề short; fetch_url là địa chỉ đọc thay khi url chặn đọc tự động; note là lưu ý khi đọc trang đó.",
+  "niches": {
+    "tram-ai": {
+      "label": "Kênh Trạm AI — tin AI, giải thích công nghệ, so sánh công cụ, giải thích paper cho người Việt",
+      "channels": [
+        {
+          "name": "Trạm AI",
+          "url": "https://www.youtube.com/channel/UC-OcFyd7wjGQ69ur92o6Rzg/videos",
+          "role": "home"
+        },
+        {
+          "name": "Trạm AI (Shorts)",
+          "url": "https://www.youtube.com/channel/UC-OcFyd7wjGQ69ur92o6Rzg/shorts",
+          "role": "home"
+        },
+        {
+          "name": "Việt Nguyễn AI",
+          "url": "https://www.youtube.com/channel/UC66_4puPl1OFS3YAeZ7tRdw",
+          "role": "vn"
+        },
+        {
+          "name": "Dũng Lại Lập Trình",
+          "url": "https://www.youtube.com/channel/UCMYT8xymrm4VOP241b86MCQ",
+          "role": "vn"
+        },
+        {
+          "name": "CEO LAB",
+          "url": "https://www.youtube.com/channel/UCXY03VbYU3PEvhUr_6bk7Jg",
+          "role": "vn"
+        },
+        {
+          "name": "Huy Dao",
+          "url": "https://www.youtube.com/channel/UCYYZ6k9B70YW1nP-qAJ8A-w",
+          "role": "vn"
+        },
+        {
+          "name": "Holetex",
+          "url": "https://www.youtube.com/channel/UCd3lwxW89gegn-6rgLdXugw",
+          "role": "vn"
+        },
+        {
+          "name": "Thanh Trần - 5 Phút AI",
+          "url": "https://www.youtube.com/channel/UCTumIe5W_2OoKUEDAq3xsKQ",
+          "role": "vn"
+        },
+        {
+          "name": "Matt Wolfe",
+          "url": "https://www.youtube.com/channel/UChpleBmo18P08aKCIgti38g",
+          "role": "source"
+        },
+        {
+          "name": "AI Explained",
+          "url": "https://www.youtube.com/channel/UCNJ1Ymd5yFuUPtn21xtRbbw",
+          "role": "source"
+        },
+        {
+          "name": "AI Search",
+          "url": "https://www.youtube.com/channel/UCIgnGlGkVRhd4qNFcEwLL4A",
+          "role": "source"
+        },
+        {
+          "name": "AI Revolution",
+          "url": "https://www.youtube.com/channel/UC5l7RouTQ60oUjLjt1Nh-UQ",
+          "role": "source"
+        },
+        {
+          "name": "TheAIGRID",
+          "url": "https://www.youtube.com/channel/UCbY9xX3_jW5c2fjlZVBI4cg",
+          "role": "source"
+        },
+        {
+          "name": "Two Minute Papers",
+          "url": "https://www.youtube.com/@TwoMinutePapers",
+          "role": "source"
+        },
+        {
+          "name": "IBM Technology",
+          "url": "https://www.youtube.com/channel/UCKWaEZ-_VweaEx1j62do_vQ",
+          "role": "source"
+        },
+        {
+          "name": "Fireship",
+          "url": "https://www.youtube.com/@Fireship",
+          "role": "source"
+        }
+      ],
+      "news_sources": [
+        {
+          "name": "VnExpress AI",
+          "url": "https://vnexpress.net/khoa-hoc-cong-nghe/ai",
+          "note": "Trang danh sách không có ngày đăng, phải mở bài để lấy ngày"
+        },
+        {
+          "name": "VietNamNet AI",
+          "url": "https://vietnamnet.vn/cong-nghe/ai"
+        },
+        {
+          "name": "OpenAI News",
+          "url": "https://openai.com/vi-VN/news/",
+          "fetch_url": "https://openai.com/news/rss.xml",
+          "note": "Trang tin trả 403 khi đọc tự động, đọc RSS bằng curl. Đây là nguồn gốc của hãng"
+        },
+        {
+          "name": "Báo Mới - Trí tuệ nhân tạo",
+          "url": "https://baomoi.com/tri-tue-nhan-tao-tag10894.epi",
+          "note": "Trang tổng hợp, lẫn nhiều bài chỉ nhắc đến AI. Lọc bài ngoài lề và mở báo gốc"
+        },
+        {
+          "name": "CafeF AI",
+          "url": "https://cafef.vn/ai.html"
+        }
+      ],
+      "seed_queries_en": [
+        "AI news this week",
+        "new AI model explained",
+        "AI tools comparison",
+        "AI research paper explained",
+        "how does it work AI explained"
+      ],
+      "seed_queries_vi": [
+        "tin tức AI mới nhất",
+        "tin AI tuần này",
+        "so sánh công cụ AI",
+        "giải thích trí tuệ nhân tạo",
+        "tất cả về AI trong phút"
+      ]
+    }
+  }
+}

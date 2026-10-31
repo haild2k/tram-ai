@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Kiểm tra nhanh (chỉ đọc, KHÔNG đăng gì) credentials Trạm AI trên 3 nền tảng.
+"""Kiểm tra nhanh (chỉ đọc, KHÔNG đăng gì) credentials Trạm AI trên 3 nền tảng + kênh YouTube tiếng Anh.
 
   python3 .claude/skills/tram-ai-skill/scripts/check_platforms.py
 
@@ -15,17 +15,21 @@ import sys
 
 import requests
 
+from upload_youtube import CHANNELS
+
 CREDS = os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials")))
 HERE = os.path.dirname(os.path.abspath(__file__))
-YT_CHANNEL = "UC-OcFyd7wjGQ69ur92o6Rzg"
 FB_PAGE = "1430978420097668"
 G = "https://graph.facebook.com/v21.0"
 
 
-def youtube():
+def youtube(key="vi"):
     from google.auth.transport.requests import Request
     from googleapiclient.discovery import build
-    p = os.path.join(CREDS, "youtube_token.pickle")
+    ch = CHANNELS[key]
+    p = os.path.join(CREDS, ch["token"])
+    if not os.path.exists(p):
+        raise RuntimeError(f"chưa đăng nhập — chạy upload_youtube.py --channel {key} --login, chọn kênh {ch['name']}")
     creds = pickle.load(open(p, "rb"))
     if not creds.valid:
         creds.refresh(Request())
@@ -33,9 +37,9 @@ def youtube():
     items = build("youtube", "v3", credentials=creds).channels().list(
         part="snippet", mine=True).execute().get("items", [])
     ids = {c["id"]: c["snippet"]["title"] for c in items}
-    if YT_CHANNEL not in ids:
-        raise RuntimeError(f"token đang là kênh {ids}, không phải Trạm AI")
-    return f"kênh {ids[YT_CHANNEL]} ({YT_CHANNEL})"
+    if ch["id"] not in ids:
+        raise RuntimeError(f"token đang là kênh {ids}, không phải {ch['name']}")
+    return f"kênh {ids[ch['id']]} ({ch['id']})"
 
 
 def facebook():
@@ -78,12 +82,12 @@ def tiktok():
 
 def main():
     bad = 0
-    for name, fn in (("YouTube", youtube), ("Facebook", facebook), ("TikTok", tiktok)):
+    for name, fn in (("YouTube", youtube), ("YouTubeEN", lambda: youtube("en")), ("Facebook", facebook), ("TikTok", tiktok)):
         try:
-            print(f"✓ {name:8} {fn()}")
+            print(f"✓ {name:9} {fn()}")
         except Exception as e:  # noqa: BLE001 — báo lỗi từng nền tảng, không dừng cả loạt
             bad += 1
-            print(f"✗ {name:8} {type(e).__name__}: {e}")
+            print(f"✗ {name:9} {type(e).__name__}: {e}")
     sys.exit(bad)
 
 

@@ -44,7 +44,7 @@ curl -sL https://huggingface.co/papers/<id>                     # upvote, ngày 
    `Figure` với `hl` (vùng tô sáng, toạ độ % theo ảnh) chạy theo lời đọc.
    Mọi hình gốc có `FigCaption` "… — <tên paper / README repo>".
 
-## 3. Dàn ý chuẩn (8–11 phút, 45–60 cảnh, 10–14 chương)
+## 3. Dàn ý chuẩn (thời lượng tuỳ nội dung — không giới hạn; thường 45+ cảnh, 10–14 chương)
 
 | Chương | Nội dung | Cảnh |
 | --- | --- | --- |
@@ -66,7 +66,7 @@ thích 1 vế lần đầu; tên mô hình/hàm trong code để monospace.
 ## 4. Dựng (thay Bước 1 của style-remotion cho 16:9)
 
 - `script.json` có `metadata.type = "paper"`; `voiceText` theo quy tắc TTS
-  (`short.md`); tiếng Việt ~4,2 từ/giây → 2.000–2.500 từ cho 8–10 phút.
+  (`short.md`); tiếng Việt ~4,2 từ/giây (≈ 250 từ/phút) — viết đủ ý, không giới hạn độ dài.
 - `cd remotion && python3 scripts/tts.py <slug>` (chạy nền, ~5 phút cho 50 cảnh).
 - Khối dựng 16:9: `src/tram/wide.tsx` (`WStage`, `WK`, `WH`, `Card`, `Bullet`, `Pill`,
   `Figure` + `hl`, `FigCaption`, `BigStat`, `RightArrow`, `OutroWide`) và
@@ -79,7 +79,10 @@ thích 1 vế lần đầu; tên mô hình/hàm trong code để monospace.
   rồi `npx remotion still <b> <Id> … --frame=<cuối mỗi cảnh>` (xargs -P 4), ghép
   contact sheet 9 khung/tấm, Read soát tràn chữ / chồng nhãn / ảnh sai.
 - Render: `npx remotion render <Id> <outputDir>/video.mp4 --codec=h264 --crf=18`
-  (outputDir `videos/tram-ai/long/<DATE>/<slug>-<timestamp>/`), rồi
+  (outputDir `videos/tram-ai/long/<DATE>/<slug>-<timestamp>/`). Máy macOS < 15:
+  render chuỗi ảnh `--concurrency=3` + **bắt buộc** `scripts/check_frames.py <seqDir> --fix`
+  trước khi ghép ffmpeg — xem `style-remotion.md` Bước 7 (video dài ~21.000 khung
+  nên dễ dính khung hỏng làm giật/nháy màn hình). Sau đó
   `python3 scripts/finalize.py <slug> <outputDir> 16:9`, `chapters.py --dir … --inject youtube.md --inject facebook.md`.
 
 ## 5. Kịch bản đăng riêng cho loại `paper`

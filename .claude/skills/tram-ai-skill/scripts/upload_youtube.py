@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
-"""Upload video.mp4 + metadata (youtube.md) từ 1 outputDir lên kênh YouTube TRẠM AI.
+"""Upload video + metadata từ 1 outputDir lên kênh YouTube TRẠM AI hoặc Tram AI Channel.
 
 Bản copy của upload-youtube-video cho kênh Trạm AI. Credentials nằm NGOÀI repo,
 trong $TRAM_AI_CREDS (mặc định <repo>/credentials):
   youtube_client_secret.json   OAuth client (Desktop)
-  youtube_token.pickle         token đã đăng nhập (scopes upload + readonly)
-Trước khi upload, script kiểm tra kênh đang đăng nhập đúng là Trạm AI
-(--expect-channel) — sai kênh thì dừng, KHÔNG đăng.
+  youtube_token.pickle         token kênh Trạm AI (tiếng Việt)
+  youtube_en_token.pickle      token kênh Tram AI Channel (tiếng Anh)
+Trước khi upload, script kiểm tra kênh đang đăng nhập đúng kênh đích
+(--channel / --expect-channel) — sai kênh thì dừng, KHÔNG đăng.
 
 Dùng:
   python3 upload_youtube.py --dir videos/_render/<slug>-<timestamp>/
   python3 upload_youtube.py --dir videos/_render/<slug>-<timestamp>/ --dry-run
+  python3 upload_youtube.py --channel en --dir <outputDir>   # video_en.mp4 + youtube_channel_en.md + thumbnail_en.png
+  python3 upload_youtube.py --channel en --login             # chỉ đăng nhập, lưu token
 """
 
 import argparse
@@ -25,9 +28,24 @@ SCOPES = [
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/youtube.force-ssl",  # phụ đề + localizations (youtube_i18n.py)
 ]
-TOKEN_FILE = os.path.join(CREDS_DIR, "youtube_token.pickle")
 CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, "youtube_client_secret.json")
-TRAM_AI_CHANNEL_ID = "UC-OcFyd7wjGQ69ur92o6Rzg"
+CHANNELS = {
+    "vi": {"id": "UC-OcFyd7wjGQ69ur92o6Rzg", "name": "Trạm AI", "lang": "vi", "token": "youtube_token.pickle",
+           "video": "video.mp4", "metadata": "youtube.md", "thumbnail": "thumbnail.png"},
+    "en": {"id": "UCArsbAuJWz26CVbkYJAk7EA", "name": "Tram AI Channel", "lang": "en", "token": "youtube_en_token.pickle",
+           "video": "video_en.mp4", "metadata": "youtube_channel_en.md", "thumbnail": "thumbnail_en.png"},
+}
+CHANNEL = CHANNELS["vi"]
+TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
+EXPECT_CHANNEL = CHANNEL["id"]
+
+
+def use_channel(key):
+    """Chọn kênh đích: token + ID kênh dùng để chặn đăng nhầm."""
+    global CHANNEL, TOKEN_FILE, EXPECT_CHANNEL
+    CHANNEL = CHANNELS[key]
+    TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
+    EXPECT_CHANNEL = CHANNEL["id"]
 
 
 def parse_youtube_md(md_path):
@@ -102,9 +120,6 @@ def set_thumbnail(youtube, video_id, thumbnail_path):
         return False
 
 
-EXPECT_CHANNEL = TRAM_AI_CHANNEL_ID
-
-
 def build_youtube_client(client_secret_path):
     from googleapiclient.discovery import build
 
@@ -121,7 +136,7 @@ def build_youtube_client(client_secret_path):
     ids = {c["id"]: c["snippet"]["title"] for c in items}
     if EXPECT_CHANNEL and EXPECT_CHANNEL not in ids:
         print(f"Lỗi: tài khoản đang đăng nhập là kênh {ids or '(không có kênh)'}, "
-              f"KHÔNG phải Trạm AI ({EXPECT_CHANNEL}). Dừng, không đăng.")
+              f"KHÔNG phải {CHANNEL['name']} ({EXPECT_CHANNEL}). Dừng, không đăng.")
         sys.exit(1)
     save_credentials(credentials)
     print(f"Kênh: {', '.join(ids.values())}")
@@ -152,6 +167,8 @@ def upload_video(
             "description": description,
             "tags": tags,
             "categoryId": category_id,
+            "defaultLanguage": CHANNEL["lang"],
+            "defaultAudioLanguage": CHANNEL["lang"],
         },
         "status": {
             "privacyStatus": privacy_status,
@@ -186,16 +203,19 @@ def upload_video(
 
 def main():
     parser = argparse.ArgumentParser(description="Upload video + metadata từ outputDir lên YouTube")
-    parser.add_argument("--dir", required=True, help="outputDir chứa video.mp4 + youtube.md")
-    parser.add_argument("--video", default=None, help="Đường dẫn video (mặc định <dir>/video.mp4)")
-    parser.add_argument("--metadata", default=None, help="Đường dẫn youtube.md (mặc định <dir>/youtube.md)")
+    parser.add_argument("--dir", help="outputDir chứa video + metadata")
+    parser.add_argument("--channel", default="vi", choices=list(CHANNELS),
+                        help="vi = Trạm AI (mặc định), en = Tram AI Channel")
+    parser.add_argument("--login", action="store_true", help="Chỉ đăng nhập + lưu token của --channel, không đăng")
+    parser.add_argument("--video", default=None, help="Đường dẫn video (mặc định theo --channel)")
+    parser.add_argument("--metadata", default=None, help="Đường dẫn file metadata (mặc định theo --channel)")
     parser.add_argument("--category", default="28", help="YouTube category ID (mặc định 28 = Science & Technology)")
     parser.add_argument("--privacy", default="public", choices=["public", "unlisted", "private"], help="Mặc định public")
     parser.add_argument("--client-secret", default=CLIENT_SECRET_FILE)
     parser.add_argument(
         "--thumbnail",
         default=None,
-        help="Ảnh thumbnail để gắn sau khi upload (mặc định <dir>/thumbnail.png nếu có)",
+        help="Ảnh thumbnail để gắn sau khi upload (mặc định theo --channel nếu có)",
     )
     parser.add_argument(
         "--no-thumbnail", action="store_true", help="Không gắn thumbnail dù có file thumbnail.png"
@@ -206,15 +226,23 @@ def main():
         default=None,
         help="Chỉ gắn/đổi lại thumbnail cho video ĐÃ đăng (không upload lại video)",
     )
-    parser.add_argument("--expect-channel", default=TRAM_AI_CHANNEL_ID,
-                        help="ID kênh bắt buộc phải khớp trước khi đăng ('' để bỏ kiểm tra)")
+    parser.add_argument("--expect-channel", default=None,
+                        help="ID kênh bắt buộc phải khớp trước khi đăng (mặc định theo --channel; '' để bỏ kiểm tra)")
     parser.add_argument("--dry-run", action="store_true", help="Chỉ in metadata đã parse, không upload")
     args = parser.parse_args()
     global EXPECT_CHANNEL
-    EXPECT_CHANNEL = args.expect_channel
+    use_channel(args.channel)
+    if args.expect_channel is not None:
+        EXPECT_CHANNEL = args.expect_channel
+
+    if args.login:
+        build_youtube_client(args.client_secret)
+        return
+    if not args.dir:
+        parser.error("cần --dir")
 
     if args.set_thumbnail_only:
-        thumb = args.thumbnail or os.path.join(args.dir, "thumbnail.png")
+        thumb = args.thumbnail or os.path.join(args.dir, CHANNEL["thumbnail"])
         if not os.path.exists(thumb):
             print(f"Lỗi: không tìm thấy thumbnail '{thumb}'.")
             sys.exit(1)
@@ -226,11 +254,11 @@ def main():
         ok = set_thumbnail(youtube, args.set_thumbnail_only, thumb)
         sys.exit(0 if ok else 1)
 
-    video_path = args.video or os.path.join(args.dir, "video.mp4")
-    metadata_path = args.metadata or os.path.join(args.dir, "youtube.md")
+    video_path = args.video or os.path.join(args.dir, CHANNEL["video"])
+    metadata_path = args.metadata or os.path.join(args.dir, CHANNEL["metadata"])
     thumbnail_path = None
     if not args.no_thumbnail:
-        thumbnail_path = args.thumbnail or (os.path.join(args.dir, "thumbnail.png") if args.dir else None)
+        thumbnail_path = args.thumbnail or os.path.join(args.dir, CHANNEL["thumbnail"])
         if thumbnail_path and not os.path.exists(thumbnail_path):
             thumbnail_path = None
 
@@ -243,7 +271,7 @@ def main():
         print(f"Lỗi: Không parse được title/description từ {metadata_path}")
         sys.exit(1)
 
-    print("--- Metadata sẽ dùng để upload ---")
+    print(f"--- Metadata sẽ dùng để upload — kênh {CHANNEL['name']} ---")
     print(f"Title: {title}")
     print(f"Description:\n{description}")
     print(f"Tags: {tags}")

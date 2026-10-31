@@ -176,7 +176,7 @@ Slot phụ (mọi layout): `accent_from`/`accent_to` (2 hex đổi màu nhấn r
 `bg_from`/`bg_to` (đổi nền riêng scene), `foot_left`/`foot_right` (nhãn góc dưới).
 Ở scene **hook**: `foot_left` = `"Trạm AI"`, để trống `foot_right`.
 **KHÔNG bao giờ** đặt ngày tháng (mọi dạng: `dd/mm/yyyy`, `dd-mm-yyyy`, `yyyy-mm-dd`,
-`ngày D tháng M`…) vào `foot_left`/`foot_right` — hay bất kỳ slot nào — của **bất kỳ
+`ngày D tháng M`, `Oct 24`…) vào `foot_left`/`foot_right` — hay bất kỳ slot nào — của **bất kỳ
 scene nào**. Video không hiển thị ngày. (Scaffold cũng tự lọc: giá trị footer trông
 giống ngày sẽ bị bỏ trắng khi render — nhưng đừng dựa vào đó, cứ để trống ngay từ
 `script.json`.)
@@ -190,7 +190,7 @@ Quy tắc slot:
   `<TPL>/assets/` (vd `"assets/logo.png"`). Có `logo` thì frame cuối hiện logo kênh
   thay cho khối gradient mặc định. Nếu user đưa đường dẫn logo → copy vào `<TPL>/assets/`.
   Logo kênh Trạm AI: `assets/logo-round.png` trong `.claude/skills/tram-ai-skill/assets/` (logo tròn, nền ngoài hình tròn trong suốt) — copy thành `<TPL>/assets/logo.png`.
-- `figure`: giữ định dạng số đẹp cho MÀN HÌNH (`"82%"`, `"5.5"`, `"1M"`).
+- `figure`: giữ định dạng số đẹp cho MÀN HÌNH, (`"82%"`, `"5.5"`, `"1M"`).
 - `items[].icon`: 1 emoji hợp ý (✅ ⚠️ 🚫 📈 💡 🔒 🚀 …).
 
 ### Step 6: Sinh script.json
@@ -246,7 +246,7 @@ Quy tắc slot:
 `voiceText` do OmniVoice đọc. **Viết mọi con số ra CHỮ tiếng Việt** trong `voiceText`
 (vd `82,7%` → `tám mươi hai phẩy bảy phần trăm`; `4,5` → `bốn phẩy năm`; `4.500` → `bốn nghìn năm trăm`;
 `GPT 5.5` → `GPT năm chấm năm`;
-`2x` → `gấp đôi`; `$5` → `năm đô`; `iOS 18.2` → `iOS mười tám chấm hai`).
+`2x` → `gấp đôi`; `$20` → `hai mươi đô`; `iOS 18.2` → `iOS mười tám chấm hai`).
 `voiceText` **KHÔNG** emoji/icon, **KHÔNG** URL, **KHÔNG** ký hiệu `→ & % $ # + =`.
 Kết câu bằng `.` hoặc `?`. Brand (Apple, OpenAI, TikTok) giữ nguyên.
 `inputs` (chữ hiển thị) thì ĐƯỢC dùng emoji + giữ định dạng số đẹp — tách biệt hoàn toàn.
@@ -264,11 +264,11 @@ Kết câu bằng `.` hoặc `?`. Brand (Apple, OpenAI, TikTok) giữ nguyên.
   không đủ ảnh); không có 2 scene ảnh dính liền nếu tránh được.
 - `<TPL>/index.html` đã đổi canvas đúng aspect (grep `data-width`).
 - `layout` của mỗi scene ∈ danh sách; slot bắt buộc của layout đó đã có.
-- `voiceText`: số đã viết ra chữ, KHÔNG emoji/URL/ký hiệu.
+- `voiceText`: tiếng Việt, số đã viết ra chữ, KHÔNG emoji/URL/ký hiệu.
 - `headline` ≤ ~2 dòng ngắn; emoji (nếu có) chỉ nằm trong `inputs`.
 - KHÔNG scene nào chứa chuỗi ngày (`dd/mm/yyyy`, `dd-mm-yyyy`, `yyyy-mm-dd`, `ngày D tháng M`…)
   ở bất kỳ slot nào (`foot_left`, `foot_right`, `body`, `kicker`, `cta`…). Grep cả `script.json`:
-  `grep -nE '[0-9]{1,2}[/-][0-9]{1,2}[/-][0-9]{2,4}|[0-9]{4}-[0-9]{2}-[0-9]{2}|ngày [0-9]' script.json`
+  `grep -nE '[0-9]{1,2}[/-][0-9]{1,2}[/-][0-9]{2,4}|[0-9]{4}-[0-9]{2}-[0-9]{2}|ngày [0-9]|\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* [0-9]{1,2}\b' script.json`
   phải KHÔNG có kết quả. Scene hook đặc biệt: `foot_right` để trống.
 
 ### Step 8: Chạy pipeline

@@ -1,10 +1,10 @@
-# Chế độ LONG — 16:9, 6–10 phút, tổng hợp + so sánh AI, DUYỆT rồi mới đăng
+# Chế độ LONG — 16:9, không giới hạn thời lượng, tổng hợp + so sánh AI, DUYỆT rồi mới đăng
 
 Dựa trên **`.claude/skills/tram-ai-skill/reference/base/media-long-remote-skill.md`**. Đọc file đó và làm
 **đúng Bước 0 → 13** (TTS `minh_quan` qua server từ xa, research đa nguồn, dàn ý
 chương, ảnh + crop logo, template động 16:9 `template-scaffold-long.html`, layout
 `chapter` / `compare` / `vs` / `spec` trong `reference/layouts.md` của skill đó,
-`script.json` 30–60 scene, tự kiểm tra, pipeline + hook atempo, chapters, thumbnail,
+`script.json` (số scene theo nội dung), tự kiểm tra, pipeline + hook atempo, chapters, thumbnail,
 **Bước 11b DUYỆT**) — **với các thay đổi dưới đây** (thay đổi thắng khi mâu thuẫn):
 
 - Mục "Ba loại video **xe**" → thay bằng **Ba loại video AI** bên dưới; mọi chỗ
@@ -12,6 +12,11 @@ chương, ảnh + crop logo, template động 16:9 `template-scaffold-long.html`
   bảng này.
 - Research → làm theo **[research-ai.md](research-ai.md)** (thay
   `tram-ai-skill/reference/research-ai.md`).
+- **Thời lượng: không giới hạn** — bỏ mọi mức "6–10 phút", "30–60 scene",
+  "~1.100–1.800 từ" của base. Độ dài do nội dung quyết định: đủ để giải thích trọn
+  chủ đề với ví dụ dễ hiểu, không độn, không cắt bớt ý chỉ để cho ngắn. Số cảnh/số
+  từ tuỳ ý (tiếng Việt ~4,2 từ/giây để ước lượng). Video dài hơn 10 phút **không**
+  phải điểm cần cảnh báo khi gửi duyệt.
 - Thương hiệu, nơi lưu, kịch bản đăng, đăng 3 nền tảng, báo kết quả → theo
   `SKILL.md` của skill này (KHÔNG gọi `create-youtube-content` / `upload-*-video`
   nhắc trong base, **CÓ** đăng TikTok).
@@ -79,10 +84,13 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
   `⏱ Chapters:` dịch tên chương) theo SKILL.md.
 - **Bước 11**: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --image <outputDir>/source-images/img-hook.jpg [--title "<≤45 ký tự>"]`.
 - **Bước 11b (DUYỆT)**: giữ nguyên mẫu bản duyệt, đổi dòng cuối thành
-  `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook + TikTok, hoặc ghi rõ cần sửa gì.`
+  `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook + TikTok, rồi dựng và đăng bản tiếng Anh lên Tram AI Channel, hoặc ghi rõ cần sửa gì.`
   KHÔNG đăng gì trước khi user duyệt rõ ràng.
 - **Bước 12**: đăng theo SKILL.md mục **Đăng 3 nền tảng** (YouTube video dài có
-  chapters → Facebook video thường → TikTok). COVER_MS như `media-skill` Bước 5b.
+  chapters → `youtube_i18n.py` phụ đề + metadata Anh → Facebook video thường → TikTok).
+  COVER_MS như `media-skill` Bước 5b.
+- **Bước 12b**: dựng `video_en.mp4` rồi đăng Tram AI Channel theo SKILL.md mục
+  **Bản video tiếng Anh** — lần duyệt ở Bước 11b đã bao gồm bước này, không hỏi lại.
 - **Bước 13**: bảng kết quả SKILL.md + các dòng: `Mục nổi bật`, `Bảng so sánh`,
   `Chương`, `Loại video: <1 tin AI tuần | 2 so sánh công cụ AI | 3 chủ đề: …>`,
   `TTS: remote · minh_quan · hook atempo=1.10`, `Hook`, `Ảnh`.

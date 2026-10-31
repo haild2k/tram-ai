@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sinh bộ file YouTube Studio (phụ đề VI/EN + audio EN) cho 1 video Trạm AI.
+"""Sinh bộ file YouTube Studio (phụ đề VI/EN; audio EN chỉ khi --with-voice) cho 1 video Trạm AI.
 
 Đầu vào: <outputDir>/youtube-studio/scenes.json — list {id, vi, en, en_tts}
   vi      phụ đề tiếng Việt hiển thị (giữ số dạng đẹp)
@@ -10,14 +10,13 @@ Mốc thời gian lấy từ chính video: cảnh i bắt đầu ở tổng đ�
 clips/scene-*-fit.mp4 trước nó; lời Việt dài bằng voice/scene-<id>.mp3.
 
 Đầu ra trong <outputDir>/youtube-studio/:
-  subtitles_vi.srt, subtitles_en.srt, audio_en.mp3 (dài đúng bằng video.mp4),
-  voice_en/scene-<id>.mp3 (từng cảnh, đã fit)
-
---no-voice: chỉ sinh 2 file .srt (không gọi TTS, không có audio_en.mp3 / voice_en/);
-  phụ đề Anh lấy đúng mốc của lời Việt, en_tts không bắt buộc.
+  subtitles_vi.srt, subtitles_en.srt (mặc định: không gọi TTS, phụ đề Anh lấy mốc lời Việt)
+  --with-voice (chưa dùng — kênh chưa lồng tiếng Anh): thêm audio_en.mp3 (dài đúng
+  bằng video.mp4) + voice_en/scene-<id>.mp3 (từng cảnh, đã fit), phụ đề Anh theo lời Anh.
+  --no-voice: giữ cho tương thích, giống mặc định.
 
 Dùng:
-  python3 make_youtube_studio.py --dir <outputDir> [--no-voice] [--voice minh_quan]
+  python3 make_youtube_studio.py --dir <outputDir> [--with-voice] [--voice minh_quan]
       [--endpoint http://14.178.142.29:13562] [--max-tempo 1.2]
 """
 import argparse
@@ -118,8 +117,10 @@ def main():
     ap.add_argument("--voice", default="minh_quan")
     ap.add_argument("--endpoint", default=os.environ.get("OMNIVOICE_ENDPOINT", "http://14.178.142.29:13562"))
     ap.add_argument("--max-tempo", type=float, default=1.2)
-    ap.add_argument("--no-voice", action="store_true", help="chỉ sinh phụ đề, không sinh giọng tiếng Anh")
+    ap.add_argument("--no-voice", action="store_true", help="(mặc định) chỉ sinh phụ đề, không sinh giọng tiếng Anh")
+    ap.add_argument("--with-voice", action="store_true", help="sinh thêm giọng tiếng Anh (audio_en.mp3)")
     a = ap.parse_args()
+    a.no_voice = a.no_voice or not a.with_voice
 
     d = a.dir
     studio = os.path.join(d, "youtube-studio")

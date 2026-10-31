@@ -11,6 +11,7 @@ cũ thiếu scope youtube.force-ssl → lần đầu in link Google để đồn
   python3 youtube_i18n.py --dir <outputDir> --video-id <id>             # làm thật
       [--replace]   xoá phụ đề cùng ngôn ngữ đã có rồi tải lại
       [--no-vi]     không tải subtitles_vi.srt
+      [--channel en] video trên Tram AI Channel: chỉ tải subtitles_video_en.srt (khớp video_en.mp4)
 
 Đầu vào trong outputDir: youtube_en.md (title + "## Mô tả (Description)"),
 youtube-studio/subtitles_vi.srt, youtube-studio/subtitles_en.srt.
@@ -20,20 +21,20 @@ import argparse
 import os
 import sys
 
-from upload_youtube import CLIENT_SECRET_FILE, TRAM_AI_CHANNEL_ID, get_credentials, parse_youtube_md, save_credentials
+from upload_youtube import CHANNELS, CLIENT_SECRET_FILE, get_credentials, parse_youtube_md, save_credentials, use_channel
 
 TRACK_NAME = {"vi": "Tiếng Việt", "en": "English"}
 
 
-def client():
+def client(ch):
     from googleapiclient.discovery import build
 
     creds = get_credentials(CLIENT_SECRET_FILE, save=False)  # chỉ lưu sau khi đúng kênh
     yt = build("youtube", "v3", credentials=creds)
     ids = {c["id"]: c["snippet"]["title"] for c in yt.channels().list(part="snippet", mine=True).execute().get("items", [])}
-    if TRAM_AI_CHANNEL_ID not in ids:
-        sys.exit(f"Lỗi: đang đăng nhập kênh {ids or '(không có kênh)'}, KHÔNG phải Trạm AI — token KHÔNG được lưu. "
-                 "Đăng nhập lại và chọn đúng kênh Trạm AI ở màn hình chọn kênh.")
+    if ch["id"] not in ids:
+        sys.exit(f"Lỗi: đang đăng nhập kênh {ids or '(không có kênh)'}, KHÔNG phải {ch['name']} — token KHÔNG được lưu. "
+                 f"Đăng nhập lại và chọn đúng kênh {ch['name']} ở màn hình chọn kênh.")
     save_credentials(creds)
     print(f"Kênh: {', '.join(ids.values())}")
     return yt
@@ -61,19 +62,27 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--replace", action="store_true")
     ap.add_argument("--no-vi", action="store_true")
+    ap.add_argument("--channel", default="vi", choices=list(CHANNELS))
     a = ap.parse_args()
+    ch = CHANNELS[a.channel]
+    use_channel(a.channel)
 
     studio = os.path.join(a.dir, "youtube-studio")
-    title_en, desc_en, _ = parse_youtube_md(os.path.join(a.dir, "youtube_en.md"))
-    srts = {lang: os.path.join(studio, f"subtitles_{lang}.srt") for lang in (["en"] if a.no_vi else ["vi", "en"])}
+    localize = a.channel == "vi"  # video trên kênh Anh vốn đã tiếng Anh, không cần localizations
+    if localize:
+        title_en, desc_en, _ = parse_youtube_md(os.path.join(a.dir, "youtube_en.md"))
+        srts = {lang: os.path.join(studio, f"subtitles_{lang}.srt") for lang in (["en"] if a.no_vi else ["vi", "en"])}
+    else:
+        srts = {"en": os.path.join(a.dir, "subtitles_video_en.srt")}
     for p in srts.values():
         if not os.path.exists(p):
             sys.exit(f"Thiếu {p}")
 
-    print(f"--- Kế hoạch cho video {a.video_id} ---")
-    print("snippet.defaultLanguage = vi, defaultAudioLanguage = vi")
-    print(f"localizations.en.title = {title_en}")
-    print(f"localizations.en.description = ({len(desc_en)} ký tự)\n{desc_en[:400]}{'…' if len(desc_en) > 400 else ''}")
+    print(f"--- Kế hoạch cho video {a.video_id} · kênh {ch['name']} ---")
+    if localize:
+        print("snippet.defaultLanguage = vi, defaultAudioLanguage = vi")
+        print(f"localizations.en.title = {title_en}")
+        print(f"localizations.en.description = ({len(desc_en)} ký tự)\n{desc_en[:400]}{'…' if len(desc_en) > 400 else ''}")
     for lang, p in srts.items():
         print(f"phụ đề {lang} ← {p}")
     print("-----------------------------------")
@@ -82,26 +91,27 @@ def main():
 
     from googleapiclient.http import MediaFileUpload
 
-    yt = client()
+    yt = client(ch)
     video, caps = show_state(yt, a.video_id)
     if a.check:
         return
 
-    sn = video["snippet"]
-    body = {
-        "id": a.video_id,
-        "snippet": {
-            "title": sn["title"],
-            "description": sn.get("description", ""),
-            "categoryId": sn["categoryId"],
-            "tags": sn.get("tags", []),
-            "defaultLanguage": "vi",
-            "defaultAudioLanguage": "vi",
-        },
-        "localizations": {**video.get("localizations", {}), "en": {"title": title_en, "description": desc_en}},
-    }
-    yt.videos().update(part="snippet,localizations", body=body).execute()
-    print("✓ Đã đặt tiêu đề + mô tả tiếng Anh (localizations.en)")
+    if localize:
+        sn = video["snippet"]
+        body = {
+            "id": a.video_id,
+            "snippet": {
+                "title": sn["title"],
+                "description": sn.get("description", ""),
+                "categoryId": sn["categoryId"],
+                "tags": sn.get("tags", []),
+                "defaultLanguage": "vi",
+                "defaultAudioLanguage": "vi",
+            },
+            "localizations": {**video.get("localizations", {}), "en": {"title": title_en, "description": desc_en}},
+        }
+        yt.videos().update(part="snippet,localizations", body=body).execute()
+        print("✓ Đã đặt tiêu đề + mô tả tiếng Anh (localizations.en)")
 
     for lang, path in srts.items():
         same = [c for c in caps if c["snippet"]["language"] == lang and c["snippet"]["trackKind"] == "standard"]

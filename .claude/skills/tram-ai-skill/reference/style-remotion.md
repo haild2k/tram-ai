@@ -1,8 +1,9 @@
 # Style REMOTION — short 9:16 motion graphics kiểu "editorial data"
 
 Style dựng bằng **Remotion** (project `remotion/` ở gốc repo), thay cho template
-HyperFrames của `tram-ai-template-video` (style **template**). Dùng khi user nói
-"style remotion", "phong cách remotion", "kiểu video Anthropic 86%"… Video mẫu
+HyperFrames của `tram-ai-template-video` (style **template**). Đây là style **MẶC ĐỊNH**
+cho short — dùng mọi lần user không nói rõ "style template" (kể cả khi nói "style
+remotion", "phong cách remotion", "kiểu video Anthropic 86%"…). Video mẫu
 đã duyệt: `remotion/src/videos/agents-judgment-calls/` (composition
 `AgentsJudgmentCalls`, đăng 28/10/2026).
 
@@ -86,6 +87,29 @@ remotion/
    python3 scripts/finalize.py <slug> <outputDir>
    ```
    (Không dùng `compose_thumbnail.py`: thumbnail là khung hook.)
+
+   **Máy macOS < 15** (vd máy dựng hiện tại macOS 13): chrome-headless-shell đi kèm
+   treo ở "Waiting for root component to load", và ffmpeg/compositor của Remotion
+   build cho macOS 15 nên `render` ra mp4 lỗi `EPIPE`. Cách làm:
+   - Mọi lệnh `render` / `still` / `compositions` thêm
+     `--browser-executable="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`.
+   - Video: render chuỗi ảnh `npx remotion render <Id> <seqDir> --sequence --image-format=jpeg --jpeg-quality=92 --muted --concurrency=3 --browser-executable=…`.
+     **`--concurrency=3`, không cao hơn**: máy dựng (i5 4 nhân, GPU tích hợp) chạy 6 luồng
+     thì Chrome thỉnh thoảng chụp hỏng khung (ô đen, hoặc khung bị lặp thành lưới
+     ảnh nhỏ) → video "giật/nháy" 1 frame; 3 luồng sạch và còn nhanh hơn. Không dùng
+     `--gl=swangle` (quá chậm → timeout `delayRender`).
+   - **Luôn soát khung hỏng trước khi ghép** (lỗi ngẫu nhiên, 3 luồng vẫn có thể dính):
+     `python3 .claude/skills/tram-ai-skill/scripts/check_frames.py <seqDir> --fix --comp <Id> --browser-executable="…"`
+     (thêm `--entry <bundleDir>` nếu đã `remotion bundle` để render lại nhanh hơn).
+     Script tìm khung khác cả khung trước lẫn sau trong khi 2 khung đó giống nhau,
+     render lại đúng các khung đó rồi kiểm lại; thoát mã 1 nếu còn sót → báo user.
+   - Chạy `finalize.py` trước (để có `startSec`), rồi ghép bằng ffmpeg hệ thống:
+     tiếng = `voice/scene-<id>.mp3` mỗi cảnh `adelay` đúng `startSec` → `amix=normalize=0`
+     → `atrim` đúng thời lượng; hình `-framerate 30 -i <seqDir>/element-%04d.jpeg`,
+     `libx264 -crf 18 -pix_fmt yuv420p`, `aac 192k`, `-movflags +faststart`.
+   - Node hệ thống 18 thấp hơn yêu cầu (≥ 20.19) nhưng vẫn chạy được; có sẵn Node 23
+     ở `/usr/local/opt/node@23/bin`.
+   - `src/videos/` bị gitignore → `src/Root.tsx` chỉ import video có trên máy đang dựng.
 8. Viết `research.md`, `CREDITS.md` (mọi ảnh + giấy phép) vào outputDir, rồi làm
    tiếp `short.md` mục **Sau Bước 1** từ bước 2 (bỏ bước 1 `mv` và bước 3
    thumbnail). `COVER_MS = 4000` (hook). `make_youtube_studio.py` chạy bình

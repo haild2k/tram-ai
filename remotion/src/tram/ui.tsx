@@ -199,7 +199,19 @@ const SOCIALS = [
   { plat: "Facebook", handle: "facebook.com/tram.ai.channel" },
 ];
 
-export const Outro: React.FC = () => {
+export const SOCIALS_EN = SOCIALS.map((s) => (s.plat === "YouTube" ? { ...s, handle: "youtube.com/@tram-ai-channel" } : s));
+
+export const Outro: React.FC<{ brand?: string; tagline?: React.ReactNode; socials?: typeof SOCIALS }> = ({
+  brand = "Trạm AI",
+  tagline = (
+    <>
+      Theo dõi để cập nhật
+      <br />
+      trí tuệ nhân tạo mỗi ngày
+    </>
+  ),
+  socials = SOCIALS,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const logo = enter(frame, fps, 0, 0.9);
@@ -211,15 +223,13 @@ export const Outro: React.FC = () => {
           style={{ width: 380, height: 380, opacity: logo, scale: `${0.7 + 0.3 * logo}`, rotate: `${(1 - logo) * -30}deg` }}
         />
         <H p={enter(frame, fps, 0.4)} size={110} style={{ marginTop: 40 }}>
-          Trạm AI
+          {brand}
         </H>
         <div style={{ ...rise(enter(frame, fps, 0.7)), fontSize: 46, fontWeight: 600, color: C.muted, marginTop: 20, lineHeight: 1.35 }}>
-          Theo dõi để cập nhật
-          <br />
-          trí tuệ nhân tạo mỗi ngày
+          {tagline}
         </div>
         <div style={{ marginTop: 70, display: "flex", flexDirection: "column", gap: 20, width: "100%" }}>
-          {SOCIALS.map((s, i) => (
+          {socials.map((s, i) => (
             <div
               key={s.plat}
               style={{

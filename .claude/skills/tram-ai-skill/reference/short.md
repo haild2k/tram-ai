@@ -46,9 +46,9 @@ Chỉ đổi truy vấn + nguồn:
 
 ## Bước 1 — chỉ thị gửi `tram-ai-template-video` (bổ sung cho 1c–1j)
 
-> **Style remotion** (user nói "style remotion"): bỏ qua cả mục này, làm Bước 1
+> **Style remotion** (MẶC ĐỊNH — mọi lần user không nói rõ "style template"): bỏ qua cả mục này, làm Bước 1
 > theo [style-remotion.md](style-remotion.md), rồi quay lại **Sau Bước 1** như
-> file đó chỉ dẫn. Mục này chỉ dành cho style **template** (mặc định).
+> file đó chỉ dẫn. Mục này chỉ dành cho style **template** (khi user nói rõ "style template").
 
 Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 
@@ -87,11 +87,13 @@ Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 3. Thumbnail: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --pick <N> [--focus "<x>% <y>%"]`
    (N = ảnh đã dùng cho hook). Lỗi → in lỗi, vẫn đi tiếp.
 4. `COVER_MS` theo `media-skill` Bước 5b.
-4b. Bộ file YouTube Studio (`youtube-studio/`: phụ đề VI/EN — tạm thời không sinh giọng EN)
+4b. Bộ file YouTube Studio (`youtube-studio/`: phụ đề VI/EN + kịch bản đọc tiếng Anh, chưa lồng tiếng EN)
    theo `SKILL.md` mục **Bộ file YouTube Studio**.
 5. Đăng **luôn, không hỏi**: YouTube → Facebook → TikTok theo `SKILL.md` mục **Đăng
    3 nền tảng**.
-6. Báo kết quả theo `SKILL.md`, thêm các dòng tóm tắt của `media-remote-skill`
+6. Dựng `video_en.mp4` rồi đăng Tram AI Channel, **không hỏi**, theo `SKILL.md` mục
+   **Bản video tiếng Anh**.
+7. Báo kết quả theo `SKILL.md`, thêm các dòng tóm tắt của `media-remote-skill`
    Bước 7 (TTS remote · hook · motion · Nghiên cứu · ảnh đã crop).
 
 ## Tạo lại theo phản hồi user

@@ -1,6 +1,6 @@
 ---
 name: tram-ai-skill
-description: Sản xuất video tiếng Việt cho kênh TRẠM AI (tin tức + giải thích về trí tuệ nhân tạo) rồi đăng lên CẢ 3 nền tảng YouTube + Facebook + TikTok, dùng credentials RIÊNG của Trạm AI. Đồng thời hỗ trợ tạo phiên bản tiếng Anh bằng phụ đề .srt và voice audio để phục vụ upload lên YouTube Studio. Hai chế độ — SHORT 9:16 (~90–120s, 1 tin/1 chủ đề AI: nghiên cứu mở rộng nhiều báo → dựng theo 1 trong 2 style: "template" (template động, mặc định) hoặc "remotion" (motion graphics Remotion, khi user nói "style remotion") → TTS server từ xa → tự đăng luôn, không duyệt) và LONG 16:9 (6–10 phút, có chương, tổng hợp + so sánh tin AI trong N ngày; research đa nguồn → bảng so sánh → kịch bản nhiều chương → DỪNG CHỜ DUYỆT → mới đăng). Logo, màu, footer, outro, CTA, hashtag theo thương hiệu Trạm AI. Trigger khi user muốn "làm video Trạm AI", "đăng kênh Trạm AI", "làm short AI", "video tin AI", "tin AI tuần này", "làm video dài Trạm AI", "so sánh công cụ AI", "tram ai skill". Input: chủ đề / URL / nội dung (short) hoặc loại video dài (1 tin AI tuần · 2 so sánh công cụ AI · 3 chủ đề AI tự chọn).
+description: Sản xuất video tiếng Việt cho kênh TRẠM AI (tin tức + giải thích về trí tuệ nhân tạo) rồi đăng lên CẢ 3 nền tảng YouTube + Facebook + TikTok, dùng credentials RIÊNG của Trạm AI. Chữ hiển thị trên slide/hình + lời đọc bằng TIẾNG VIỆT. Đăng xong bản Việt thì dựng tiếp bản video tiếng Anh (chữ trên hình + giọng đọc tiếng Anh) rồi đăng lên kênh YouTube TRAM AI CHANNEL (@tram-ai-channel). Bản Việt vẫn có phụ đề + tiêu đề/mô tả tiếng Anh. Hai chế độ — SHORT 9:16 (~90–120s, 1 tin/1 chủ đề AI: nghiên cứu mở rộng nhiều báo → dựng theo 1 trong 2 style: "remotion" (motion graphics Remotion, MẶC ĐỊNH) hoặc "template" (template động HyperFrames, khi user nói "style template") → TTS server từ xa → tự đăng luôn, không duyệt) và LONG 16:9 (không giới hạn thời lượng, có chương, tổng hợp + so sánh tin AI trong N ngày; research đa nguồn → bảng so sánh → kịch bản nhiều chương → DỪNG CHỜ DUYỆT → mới đăng). Logo, màu, footer, outro, CTA, hashtag theo thương hiệu Trạm AI. Trigger khi user muốn "làm video Trạm AI", "đăng kênh Trạm AI", "làm short AI", "video tin AI", "tin AI tuần này", "làm video dài Trạm AI", "so sánh công cụ AI", "tram ai skill". Input: chủ đề / URL / nội dung (short) hoặc loại video dài (1 tin AI tuần · 2 so sánh công cụ AI · 3 chủ đề AI tự chọn).
 ---
 
 # Trạm AI — sản xuất + đăng 3 nền tảng (tram-ai-skill)
@@ -23,16 +23,50 @@ hai chế độ và **thắng** tài liệu nền khi mâu thuẫn — đặc bi
 `upload-facebook-video`, `upload-tiktok-video` → ở project này **bỏ qua**, dùng
 mục **Kịch bản đăng** + **Đăng 3 nền tảng** bên dưới (CÓ đăng TikTok).
 
+## Thứ tự mỗi lần chạy — Việt trước, Anh sau
+
+Mỗi video đi qua 2 giai đoạn, luôn theo thứ tự này, cả short lẫn long:
+
+1. **Tiếng Việt → kênh Trạm AI**: dựng `video.mp4` rồi đăng YouTube @tram-ai +
+   Facebook + TikTok (mục **Đăng 3 nền tảng**).
+2. **Tiếng Anh → kênh Tram AI Channel**: chỉ sau khi giai đoạn 1 đã chạy hết, dựng
+   `video_en.mp4` rồi đăng YouTube @tram-ai-channel (mục **Bản video tiếng Anh**).
+   Không đăng bản Anh lên Facebook/TikTok.
+
+Một nền tảng ở giai đoạn 1 lỗi vẫn đi tiếp giai đoạn 2; giai đoạn 2 lỗi không ảnh
+hưởng các bài đã đăng. Long: user duyệt **1 lần** ở Bước 11b, lần duyệt đó áp dụng
+cho cả 2 giai đoạn.
+
 ## Style dựng video (SHORT)
 
 | Style | Khi nào | Dựng bằng | Làm theo |
 | --- | --- | --- | --- |
-| **template** (mặc định) | user không nói style | skill con `tram-ai-template-video` (template HyperFrames động, ảnh full-frame, footer + chữ chạy) | [reference/short.md](reference/short.md) Bước 1 |
-| **remotion** | user nói "style remotion" / "phong cách remotion" | project `remotion/` — motion graphics "editorial data": số liệu chạy động, biểu đồ gốc làm bằng chứng, ảnh lồng trong khung, KHÔNG thanh trên / footer | [reference/style-remotion.md](reference/style-remotion.md) thay Bước 1 của `short.md` |
+| **remotion** (mặc định) | user không nói style, hoặc nói "style remotion" / "phong cách remotion" | project `remotion/` — motion graphics "editorial data": số liệu chạy động, biểu đồ gốc làm bằng chứng, ảnh lồng trong khung, KHÔNG thanh trên / footer | [reference/style-remotion.md](reference/style-remotion.md) thay Bước 1 của `short.md` |
+| **template** | user nói rõ "style template" / "template động" / "kiểu HyperFrames" | skill con `tram-ai-template-video` (template HyperFrames động, ảnh full-frame, footer + chữ chạy) | [reference/short.md](reference/short.md) Bước 1 |
 
 Hai style dùng chung mọi bước còn lại (nghiên cứu, thương hiệu, kịch bản đăng,
 YouTube Studio, đăng 3 nền tảng). Ghi style đã dùng vào `script.json`
 (`metadata.style`) và dòng tóm tắt khi báo kết quả.
+
+## Ngôn ngữ — chữ trên slide TIẾNG VIỆT
+
+| Thành phần | Ngôn ngữ |
+| --- | --- |
+| **Chữ hiển thị trên hình** (mọi slide / cảnh, cả short lẫn long, cả 2 style) | **Tiếng Việt** |
+| Lời đọc `voiceText` (giọng `minh_quan`) | Tiếng Việt |
+| Phụ đề `youtube-studio/` | phụ đề VI + EN, kịch bản đọc tiếng Anh `en_tts` (mục **Bộ file YouTube Studio**) |
+| `video_en.mp4` (kênh Tram AI Channel) | chữ trên hình + lời đọc **tiếng Anh**, viết `Tram AI` không dấu |
+| Kịch bản đăng `youtube.md` / `facebook.md` / `tiktok.md` + `_en` | như mục **Kịch bản đăng** |
+
+Quy tắc khi viết chữ trên hình (slot `inputs` của style template / chuỗi JSX trong
+`Scenes.tsx` của style remotion):
+
+- Tiếng Việt có dấu, gọn, **cùng ý + cùng số liệu** với `voiceText` của cảnh đó.
+  Giữ nguyên tên riêng / sản phẩm / mô hình / paper và thuật ngữ quen dùng
+  (`AI`, `agent`, `benchmark`, `token`…).
+- Số kiểu Việt: `88,7%`, `117.000`, `20 USD/tháng`, `1 triệu token`, `gấp 2`.
+- Nguồn trên hình: `Nguồn: <tên>`; nhãn ảnh/biểu đồ gốc `… — <nguồn>`.
+- Outro `tagline` tiếng Việt (vd `Theo dõi để cập nhật AI mỗi ngày`).
 
 ## Kênh & định vị
 
@@ -86,6 +120,7 @@ Thư mục mặc định `<repo>/credentials` (override bằng `TRAM_AI_CREDS`):
 | --- | --- | --- | --- |
 | YouTube | `youtube_client_secret.json`, `youtube_token.pickle` | kênh **Trạm AI** `UC-OcFyd7wjGQ69ur92o6Rzg` (@tram-ai) | app Google đã publish → refresh token không hết hạn 7 ngày |
 | Facebook | `facebook_credentials.json` | Page **Trạm AI** `1430978420097668` | `page_access_token` (Page token không hết hạn, quyền data hết hạn ~26/01/2027) — script ưu tiên trường này; `user_access_token` chỉ là dự phòng |
+| YouTube tiếng Anh | `youtube_client_secret.json` (dùng chung), `youtube_en_token.pickle` | kênh **Tram AI Channel** `UCArsbAuJWz26CVbkYJAk7EA` (@tram-ai-channel) | token riêng, mỗi token chỉ dùng được cho 1 kênh |
 | TikTok | `tiktok/tiktok_credentials.json`, `tiktok/tiktok_token.json` | **@tram.ai.vn** | app ở **Sandbox** → chỉ đăng **SELF_ONLY** (riêng tư) tới khi TikTok duyệt app |
 
 **Bước 0 của mọi lần chạy** (trước cả research, mất ~5s):
@@ -94,13 +129,16 @@ Thư mục mặc định `<repo>/credentials` (override bằng `TRAM_AI_CREDS`):
 python3 .claude/skills/tram-ai-skill/scripts/check_platforms.py
 ```
 
-- Cả 3 dòng `✓` → đi tiếp.
+- Cả 4 dòng `✓` (YouTube, YouTubeEN, Facebook, TikTok) → đi tiếp.
 - Có dòng `✗` → báo user dòng đó, **vẫn làm video** và đăng các nền tảng còn
   lại; nền tảng lỗi ghi ✗ ở bảng kết quả. Cách sửa:
   - YouTube lỗi token → đăng nhập lại: chạy thật (không `--dry-run`)
     `upload_youtube.py --dir <outputDir>` ở chế độ nền; script mở trang chờ ở
     cổng 8090 và in link Google → gửi link cho user mở trên máy này, chọn
     **kênh Trạm AI**. Script tự chặn nếu đăng nhập nhầm kênh khác.
+  - YouTubeEN lỗi token → `upload_youtube.py --channel en --login` ở chế độ nền, gửi
+    link cho user, chọn **Tram AI Channel**. Vẫn làm và đăng bản Việt, dựng `video_en.mp4`,
+    chỉ dừng ở bước đăng bản Anh và ghi ✗ ở bảng kết quả.
   - Facebook hết hạn / thiếu quyền → xin user User Token mới (Graph API Explorer,
     app **Trạm AI**, chọn *User Token*, quyền `pages_show_list pages_manage_posts
     pages_read_engagement`), đổi sang token dài hạn bằng `fb_exchange_token` với
@@ -214,7 +252,7 @@ nguyên để script parse được; `facebook_en.md` văn bản thuần như `f
 - `Nguồn tham khảo:` → `References:`; CTA:
   ```
   Follow Tram AI for daily updates on artificial intelligence:
-  👉 YouTube: https://www.youtube.com/@tram-ai
+  👉 YouTube: https://www.youtube.com/@tram-ai-channel
   👉 TikTok: https://www.tiktok.com/@tram.ai.vn
   👉 Facebook: https://www.facebook.com/tram.ai.channel
   ```
@@ -224,27 +262,31 @@ nguyên để script parse được; `facebook_en.md` văn bản thuần như `f
 - `youtube_en.md`: `## Tags` = từ khoá tiếng Anh người xem thật sự gõ (bỏ câu tìm kiếm
   tiếng Việt, thay bằng câu tiếng Anh tương ứng); `## Ghim comment gợi ý` dịch câu hỏi.
 
-Tự kiểm tra: 5 file tồn tại; CTA đúng 3 link Trạm AI, không có link/kênh nào
-khác; hashtag đúng thứ tự; bản `_en` khớp bản Việt về số đoạn, số liệu, mốc chương.
+Tự kiểm tra: 5 file tồn tại; CTA đúng 3 link Trạm AI (bản `_en` trỏ YouTube sang
+@tram-ai-channel), không có link/kênh nào khác; hashtag đúng thứ tự; bản `_en` khớp bản Việt về số đoạn, số liệu, mốc chương.
 
-## Bộ file YouTube Studio (phụ đề VI/EN) — LUÔN sinh
+## Bộ file YouTube Studio (phụ đề + kịch bản tiếng Anh) — LUÔN sinh
 
-> **TẠM THỜI: KHÔNG sinh giọng tiếng Anh.** Chỉ sinh phụ đề VI/EN + metadata
-> tiếng Anh; không gọi TTS, không có `audio_en.mp3` / `voice_en/`, không cần
-> `en_tts`. Khi user bật lại giọng Anh → bỏ `--no-voice` và làm theo mục
-> "Khi bật lại giọng EN" cuối phần này.
+> **Video tiếng Việt chưa lồng tiếng Anh**: chỉ sinh phụ đề VI/EN + kịch bản đọc
+> tiếng Anh (`en_tts`), KHÔNG gọi TTS tiếng Anh, không có `audio_en.mp3` / `voice_en/`.
+> Khi user bật lồng tiếng → làm theo mục "Khi bật lồng tiếng EN" cuối phần này.
+> Khác với `video_en.mp4` riêng cho kênh Tram AI Channel (mục **Bản video tiếng Anh**).
 
-Video đăng bằng tiếng Việt, nhưng YouTube có thêm phụ đề tiếng Anh. Sau khi
-render xong (short lẫn long), luôn sinh thư mục con `<outputDir>/youtube-studio/`:
+Video đăng bằng tiếng Việt, nhưng YouTube có thêm phụ đề + tiêu đề/mô tả tiếng
+Anh. Sau khi render xong (short lẫn long), luôn sinh thư mục con
+`<outputDir>/youtube-studio/`:
 
 | File | Nội dung |
 | --- | --- |
-| `scenes.json` | nguồn: list `{id, vi, en}` mỗi cảnh — `vi` phụ đề Việt (số dạng đẹp, KHÔNG dùng `voiceText` đọc-ra-chữ), `en` phụ đề Anh |
+| `scenes.json` | nguồn: list `{id, vi, en, en_tts}` mỗi cảnh — `vi` phụ đề Việt (số dạng đẹp, KHÔNG dùng `voiceText` đọc-ra-chữ), `en` phụ đề Anh, `en_tts` kịch bản đọc tiếng Anh |
 | `subtitles_vi.srt` · `subtitles_en.srt` | phụ đề có mốc thời gian, khớp lời Việt từng cảnh |
-| `README.md` | hướng dẫn upload YouTube Studio (bên dưới) |
+| `README.md` | hướng dẫn phần làm tay trong YouTube Studio (bên dưới) |
 
 Cách làm: viết `scenes.json` (dịch sát nghĩa, không thêm số liệu ngoài
-`script.json`), rồi chạy:
+`script.json`). `en_tts` = kịch bản đọc rút gọn từ `en` cho vừa cảnh, sẵn cho lúc
+bật lồng tiếng: số viết ra chữ (`93.23` → `ninety-three point two three`),
+`Trạm AI` → `Tram AI`, ≤ `3,2 × (durationSec − 0,4)` từ (`durationSec` trong
+`script.json`). Rồi chạy:
 
 ```bash
 python3 .claude/skills/tram-ai-skill/scripts/make_youtube_studio.py --dir <outputDir> --no-voice
@@ -253,16 +295,53 @@ python3 .claude/skills/tram-ai-skill/scripts/make_youtube_studio.py --dir <outpu
 Script đo mốc cảnh từ `clips/scene-*-fit.mp4` và độ dài lời Việt
 `voice/scene-<id>.mp3`, sinh 2 file `.srt` (phụ đề Anh dùng cùng mốc lời Việt).
 
-Upload trong YouTube Studio (ghi vào `README.md`):
-1. Phụ đề → dòng **Tiếng Việt** → Tải tệp lên → *Có thời gian* → `subtitles_vi.srt`.
-2. **Thêm ngôn ngữ** → Tiếng Anh: tải `subtitles_en.srt`; dán tiêu đề + mô tả từ `../youtube_en.md`.
+Sau khi đăng YouTube, phụ đề VI/EN + tiêu đề/mô tả Anh được **tải tự động** bằng
+`youtube_i18n.py` (mục **Đăng 3 nền tảng**). `README.md` ghi cách làm tay khi script
+đó lỗi: Phụ đề → Tiếng Việt → Tải tệp lên → *Có thời gian* → `subtitles_vi.srt`;
+**Thêm ngôn ngữ** → Tiếng Anh: `subtitles_en.srt` + tiêu đề/mô tả từ `../youtube_en.md`.
 
-Khi bật lại giọng EN: thêm `en_tts` vào mỗi cảnh (lời đọc Anh, số viết ra chữ,
-`Trạm AI` → `Tram AI`, ≤ `3,2 × (thời lượng cảnh − 0,4)` từ), chạy không có
-`--no-voice` → script gọi TTS `minh_quan`, fit ≤ ×1,2 (thoát mã 1 + `CẢNH BÁO <id>`
-nếu cần hơn → rút gọn `en_tts`, xoá `voice_en/scene-<id>.raw.mp3`, chạy lại), ghép
-`audio_en.mp3`; README thêm bước 3: Chỉnh sửa video → **Bản âm thanh** → Thêm →
-Tiếng Anh → `audio_en.mp3`.
+Khi bật lồng tiếng EN (chỉ khi user yêu cầu rõ): chạy với `--with-voice` thay cho `--no-voice` → script gọi TTS `minh_quan` cho
+`en_tts`, fit ≤ ×1,2 (thoát mã 1 + `CẢNH BÁO <id>` nếu cần hơn → rút gọn `en_tts`,
+xoá `voice_en/scene-<id>.raw.mp3`, chạy lại), ghép `audio_en.mp3`. API YouTube KHÔNG
+cho tải bản âm thanh → README thêm bước: Chỉnh sửa video → **Bản âm thanh** → Thêm →
+Tiếng Anh → `audio_en.mp3`; báo kết quả nhắc user bước này.
+
+## Bản video tiếng Anh — `video_en.mp4` → kênh Tram AI Channel (LUÔN làm, sau khi đăng bản Việt)
+
+Style `template` chưa có pipeline tiếng Anh → bỏ qua giai đoạn này, ghi rõ ở báo kết
+quả. Style `remotion` (kể cả short, long, paper): bản tiếng Anh là **một file trong CHUNG thư mục với video tiếng Việt** (`<outputDir>/video_en.mp4`),
+KHÔNG tạo thư mục `…-en-<timestamp>` riêng. Dựng hẳn lại cả chữ trên hình + giọng đọc
+(không phải chỉ thay tiếng), theo mẫu `remotion/src/videos/ai-ham-kich-hoat-30-10-en/`:
+
+1. `src/videos/<slug>-en/`: `script.json` (lời đọc Anh đầy đủ, số viết ra chữ, `Tram AI`),
+   `cues.json` (`{cảnh: {cụm Việt: cụm Anh}}`, cụm Anh phải có trong lời đọc), `index.tsx`
+   (`LangProvider value="en"`, outro + thumbnail Anh; outro truyền `socials={SOCIALS_EN}` để hiện
+   kênh `youtube.com/@tram-ai-channel`); đăng ký composition trong `Root.tsx`. Short 9:16: `defineShort`
+   nhận `outro`, dùng `<Outro brand="Tram AI" tagline="…" socials={SOCIALS_EN} />` từ `tram/ui.tsx`.
+2. `python3 scripts/tts.py <slug>-en` (giọng `minh_quan`).
+3. `Scenes.tsx` của bản Việt: thêm `useLang` — `c.L(vi, en)`, `c.tr()` cho chữ trong mảng, `c.f()`
+   cho số; thiếu cue/chữ Anh phải báo lỗi. Thêm xong đối chiếu vài khung bản Việt (không đổi).
+4. Chụp khung cuối từng cảnh soát tràn chữ → render chuỗi ảnh → `check_frames.py` → ghép:
+   ```bash
+   python3 .claude/skills/tram-ai-skill/scripts/mux_video_en.py --dir <outputDir> \
+       --slug <slug>-en --seq <thư mục ảnh>
+   ```
+   Ra `video_en.mp4`, `chapters_en.txt`, `subtitles_video_en.srt`, `youtube_channel_en.md`
+   (= `youtube_en.md` + mốc chương của `video_en.mp4`); thumbnail lưu `thumbnail_en.png`.
+5. Đăng lên Tram AI Channel — dry-run trước, soát đúng kênh, mốc chương và số phút trong tiêu đề
+   (bản Anh thường dài khác bản Việt, sửa trong `youtube_channel_en.md` nếu lệch) rồi chạy thật:
+   ```bash
+   T=.claude/skills/tram-ai-skill/scripts
+   python3 $T/upload_youtube.py --channel en --dir <outputDir> --dry-run
+   python3 $T/upload_youtube.py --channel en --dir <outputDir>
+   python3 $T/youtube_i18n.py --channel en --dir <outputDir> --video-id <VIDEO_ID_EN>
+   ```
+   Lệnh đầu tiên dùng `video_en.mp4` + `youtube_channel_en.md` + `thumbnail_en.png`, public,
+   tự chặn nếu sai kênh. Lệnh cuối chỉ tải `subtitles_video_en.srt`.
+
+Timeline bản Anh riêng nên **`youtube_en.md` / `facebook_en.md` / `youtube-studio/subtitles_en.srt`
+khớp `video.mp4`, không khớp `video_en.mp4`** — chúng chỉ dùng cho bản tiếng Anh gắn trên video Việt.
+Đăng Tram AI Channel luôn dùng `youtube_channel_en.md` + `subtitles_video_en.srt`.
 
 ## Đăng 3 nền tảng (sau Bước 0 ✓; long chỉ sau khi user duyệt)
 
@@ -274,6 +353,10 @@ T=.claude/skills/tram-ai-skill/scripts
 # 1. YouTube — public, tự gắn thumbnail.png, tự kiểm tra đúng kênh Trạm AI
 python3 $T/upload_youtube.py --dir <outputDir> --dry-run
 python3 $T/upload_youtube.py --dir <outputDir>
+# 1b. YouTube tiếng Anh — phụ đề VI/EN + tiêu đề/mô tả Anh (localizations.en) cho video vừa đăng
+python3 $T/youtube_i18n.py --dir <outputDir> --video-id <VIDEO_ID> --dry-run
+python3 $T/youtube_i18n.py --dir <outputDir> --video-id <VIDEO_ID>
+#    (token thiếu quyền youtube.force-ssl → script in link Google, gửi user đồng ý 1 lần, chọn kênh Trạm AI)
 # 2. Facebook — Page Trạm AI; 9:16 tự thành Reel, 16:9 video thường
 python3 $T/upload_facebook.py --dir <outputDir> --metadata <outputDir>/facebook.md \
     --cover-ms <COVER_MS> --dry-run
@@ -288,7 +371,12 @@ python3 $T/upload_tiktok.py --dir <outputDir> --cover-ms <COVER_MS> --privacy SE
 - **TikTok privacy**: chạy `upload_tiktok.py --check`; khi danh sách privacy cho
   phép có `PUBLIC_TO_EVERYONE` (app đã được TikTok duyệt) → đổi sang
   `--privacy PUBLIC_TO_EVERYONE`; còn chưa có → `SELF_ONLY` (ghi rõ "riêng tư —
-  app Sandbox" ở bảng kết quả).
+  app Sandbox" ở bảng kết quả). Lưu ý: danh sách privacy có thể hiện
+  `PUBLIC_TO_EVERYONE` dù app **chưa audit** — khi đó `video/init` trả lỗi
+  `unaudited_client_can_only_post_to_private_accounts` (với **mọi** `--privacy`,
+  kể cả `SELF_ONLY`): app chưa audit chỉ đăng được khi **tài khoản** TikTok để
+  chế độ riêng tư → không thử lại; ghi ✗ + lý do, gợi ý user hoặc chuyển
+  @tram.ai.vn sang tài khoản riêng tư rồi chạy lại, hoặc đăng tay từ app TikTok.
 - TikTok trả `FAILED` lý do `spam_risk` → **không đăng lại liên tục**; báo user,
   gợi ý đăng tay video đó từ app TikTok (tài khoản mới hay bị chặn khi đăng qua API).
 - Long 16:9 trên TikTok: đăng nguyên video (giới hạn tài khoản 3600s); video
@@ -305,6 +393,11 @@ python3 $T/upload_tiktok.py --dir <outputDir> --cover-ms <COVER_MS> --privacy SE
 | YouTube  | Short / video dài | ✓ public (thumbnail ✓/✗) | https://youtu.be/<id> |
 | Facebook | Reel / video thường | ✓ công khai | https://www.facebook.com/1430978420097668/videos/<id> |
 | TikTok   | video | ✓ riêng tư (Sandbox) / ✓ công khai / ✗ <lý do> | publish_id <id> |
+
+YouTube tiếng Anh: phụ đề VI ✓/✗ · phụ đề EN ✓/✗ · tiêu đề/mô tả EN ✓/✗
+
+✓ Video tiếng Anh: [video_en.mp4](<outputDir>/video_en.mp4)  (<aspect> · <mm:ss>)
+| Tram AI Channel | Short / video dài | ✓ public (thumbnail ✓/✗ · phụ đề ✓/✗) / ✗ <lý do> | https://youtu.be/<id> |
 ```
 
 Cộng các dòng tóm tắt riêng của từng chế độ (xem reference).
@@ -314,8 +407,10 @@ Cộng các dòng tóm tắt riêng của từng chế độ (xem reference).
 - Tài liệu nền `reference/base/*.md` giữ gần nguyên bản gốc (đã đổi thương hiệu
   + đường dẫn) để dễ đối chiếu khi bản gốc cập nhật — sửa quy tắc riêng của Trạm AI
   ở `SKILL.md` / `short.md` / `long.md`, không sửa base.
-- Scripts trong `scripts/`: `check_platforms.py` (kiểm tra), `upload_youtube.py`
-  (bản copy trỏ creds Trạm AI + chặn sai kênh, category 28 Khoa học & Công nghệ),
+- Scripts trong `scripts/`: `check_platforms.py` (kiểm tra), `mux_video_en.py` (ghép bản tiếng Anh), `check_frames.py`
+  (style remotion: dò + render lại khung hỏng trong chuỗi ảnh trước khi ghép — chống
+  giật/nháy màn hình), `upload_youtube.py`
+  (bản copy trỏ creds Trạm AI + chặn sai kênh, `--channel en` cho Tram AI Channel, category 28 Khoa học & Công nghệ),
   `upload_tiktok.py` + `tiktok_web_auth.py` (bản copy trỏ creds Trạm AI, luồng web,
   chặn sai tài khoản), `compose_thumbnail.py` / `compose_collage.py` /
   `chapters.py` (đổi màu + mốc CTA Trạm AI), `upload_facebook.py` (mặc định
