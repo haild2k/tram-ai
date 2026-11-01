@@ -56,7 +56,7 @@ Mỗi ứng viên phải gán đúng một `format`, vì định dạng quyết 
 | `long-1` | Tổng hợp tin AI trong N ngày | Gom 3–6 tin cùng tuần |
 | `long-2` | So sánh công cụ AI | Cần số liệu, giá, benchmark có nguồn |
 | `long-3` | Chủ đề AI tự chọn, gồm series "Tất cả … trong N phút" | Nội dung bền, không phụ thuộc ngày đăng |
-| `long-paper` | Giải thích 1 paper, tiêu đề `[Explained] <tên paper>` | Có link arXiv / Hugging Face / GitHub |
+| `long-paper` | Giải thích 1 paper, tiêu đề Việt `[Giải thích] <tên paper>` · Anh `[Explained] <tên paper>` | Có link arXiv / Hugging Face / GitHub |
 
 ## Thư mục output
 
