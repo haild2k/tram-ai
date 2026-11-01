@@ -37,6 +37,7 @@ def write_channel_md(d, chapter_lines):
     block = "⏱ Chapters:\n" + "\n".join(chapter_lines) + "\n"
     text, n = re.subn(r"⏱ Chapters:\n(?:.+\n?)+", lambda _: block, text)
     text = re.sub(r"youtube\.com/@tram-ai(?!-channel)\b", "youtube.com/@tram-ai-channel", text)
+    text = re.sub(r"^References:.*\n\n?", "", text, flags=re.MULTILINE)  # kênh Anh không ghi nguồn
     if chapter_lines and not n:
         print("Cảnh báo: youtube_en.md không có khối ⏱ Chapters:, youtube_channel_en.md thiếu mốc chương")
     with open(os.path.join(d, "youtube_channel_en.md"), "w", encoding="utf-8") as f:

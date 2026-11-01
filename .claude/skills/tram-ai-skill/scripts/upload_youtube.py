@@ -24,18 +24,21 @@ import re
 import sys
 
 CREDS_DIR = os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials")))
-SCOPES = [
+BASE_SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
-    "https://www.googleapis.com/auth/youtube.force-ssl",  # phụ đề + localizations (youtube_i18n.py)
 ]
+FORCE_SSL = "https://www.googleapis.com/auth/youtube.force-ssl"  # phụ đề + localizations (youtube_i18n.py)
 CHANNELS = {
     "vi": {"id": "UC-OcFyd7wjGQ69ur92o6Rzg", "name": "Trạm AI", "lang": "vi", "token": "youtube_token.pickle",
            "client_secret": "youtube_client_secret.json",
-           "video": "video.mp4", "metadata": "youtube.md", "thumbnail": "thumbnail.png"},
+           "video": "video.mp4", "metadata": "youtube.md", "thumbnail": "thumbnail.png",
+           # Kênh Việt KHÔNG đăng phụ đề / tiêu đề Anh → không xin force-ssl
+           "scopes": BASE_SCOPES},
     "en": {"id": "UCArsbAuJWz26CVbkYJAk7EA", "name": "Tram AI Channel", "lang": "en", "token": "youtube_en_token.pickle",
            "client_secret": "youtube_en_client_secret.json",
-           "video": "video_en.mp4", "metadata": "youtube_channel_en.md", "thumbnail": "thumbnail_en.png"},
+           "video": "video_en.mp4", "metadata": "youtube_channel_en.md", "thumbnail": "thumbnail_en.png",
+           "scopes": BASE_SCOPES + [FORCE_SSL]},
 }
 CHANNEL = CHANNELS["vi"]
 TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
@@ -81,14 +84,15 @@ def get_credentials(client_secret_path, save=True):
             creds = pickle.load(f)
 
     # Token cũ thiếu scope mới (vd force-ssl) → xin đồng ý lại 1 lần, gộp vào cùng token
-    if creds and not set(SCOPES) <= set(creds.scopes or []):
-        print(f"Token thiếu quyền {sorted(set(SCOPES) - set(creds.scopes or []))} → cần đồng ý lại 1 lần.", flush=True)
+    scopes = CHANNEL["scopes"]
+    if creds and not set(scopes) <= set(creds.scopes or []):
+        print(f"Token thiếu quyền {sorted(set(scopes) - set(creds.scopes or []))} → cần đồng ý lại 1 lần.", flush=True)
         creds = None
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
     elif not creds or not creds.valid:
         flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-            client_secret_path, SCOPES
+            client_secret_path, scopes
         )
         creds = flow.run_local_server(port=8090, open_browser=False, prompt="consent")
 

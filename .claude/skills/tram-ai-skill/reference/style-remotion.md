@@ -21,8 +21,8 @@ Studio, đăng 3 nền tảng). File này chỉ **thay Bước 1** (dựng video
   `H` lớn (84–92px, từ khoá tô `Hl` vàng) → 1 khối trọng tâm (số đếm chạy, biểu
   đồ cột/thanh, sơ đồ luồng, danh sách thẻ…).
 - Số liệu chính luôn là đồ hoạ tiếng Việt chạy động (`count()`, cột mọc lên,
-  thanh chạy); biểu đồ/sơ đồ gốc (tiếng Anh) chỉ đặt kèm làm bằng chứng, có
-  `Caption` "… — <nguồn>" ngay dưới.
+  thanh chạy); biểu đồ/sơ đồ gốc (tiếng Anh) chỉ đặt kèm làm bằng chứng; `Caption`
+  (nếu có) chỉ mô tả ngắn, **KHÔNG ghi nguồn ảnh**.
 - Chuyển cảnh: fade 10 frame. Hook đọc nhanh ×1,10.
 - Outro chuẩn (`Outro` trong `src/tram/ui.tsx`, tự nối): logo tròn, "Trạm AI",
   tagline, 3 thẻ kênh hiện **đủ URL** (`facebook.com/tram.ai.channel`).
@@ -37,8 +37,8 @@ Studio, đăng 3 nền tảng). File này chỉ **thay Bước 1** (dựng video
 - Ảnh minh hoạ một **ngành/khái niệm** (ngân hàng, bệnh viện…) KHÔNG được để lộ
   thương hiệu cụ thể (dễ hiểu nhầm hãng đó liên quan) → chọn ảnh chung hoặc crop
   bỏ biển hiệu, logo trên màn hình, watermark, dấu thời gian (PIL `crop`).
-- Ảnh giấy phép CC BY / CC BY-SA → truyền `credit="Wikimedia · CC BY-SA"` cho
-  `Photo` (nhãn nhỏ góc ảnh) và ghi đủ trong `CREDITS.md`.
+- KHÔNG truyền `credit` cho `Photo` (không nhãn nguồn góc ảnh). Mọi ảnh + giấy phép
+  chỉ ghi trong `CREDITS.md`; tránh ảnh CC BY / CC BY-SA (cần ghi công trên video).
 - Ảnh đặt ở `remotion/public/videos/<slug>/img/`. Hook: ảnh phủ nửa trên, mask
   mờ dần xuống nền (xem `Hook` của video mẫu).
 
