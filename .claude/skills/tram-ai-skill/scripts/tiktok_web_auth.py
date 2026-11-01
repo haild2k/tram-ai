@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Đăng nhập TikTok kiểu WEB (không PKCE) cho Trạm AI (@tram.ai.vn).
+"""Đăng nhập TikTok kiểu WEB (không PKCE) cho Trạm AI (@tram.ai.channel).
 Redirect = trang github.io trong tiktok_credentials.json; trang đó hiện URL có ?code=… để copy.
   python3 tiktok_web_auth.py url              -> in link đăng nhập
   python3 tiktok_web_auth.py complete '<URL>' -> đổi code lấy token, lưu tiktok_token.json

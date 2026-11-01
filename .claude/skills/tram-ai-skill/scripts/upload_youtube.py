@@ -3,7 +3,8 @@
 
 Bản copy của upload-youtube-video cho kênh Trạm AI. Credentials nằm NGOÀI repo,
 trong $TRAM_AI_CREDS (mặc định <repo>/credentials):
-  youtube_client_secret.json   OAuth client (Desktop)
+  youtube_client_secret.json     OAuth client (Desktop) kênh Trạm AI
+  youtube_en_client_secret.json  OAuth client (Desktop) kênh Tram AI Channel
   youtube_token.pickle         token kênh Trạm AI (tiếng Việt)
   youtube_en_token.pickle      token kênh Tram AI Channel (tiếng Anh)
 Trước khi upload, script kiểm tra kênh đang đăng nhập đúng kênh đích
@@ -28,23 +29,26 @@ SCOPES = [
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/youtube.force-ssl",  # phụ đề + localizations (youtube_i18n.py)
 ]
-CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, "youtube_client_secret.json")
 CHANNELS = {
     "vi": {"id": "UC-OcFyd7wjGQ69ur92o6Rzg", "name": "Trạm AI", "lang": "vi", "token": "youtube_token.pickle",
+           "client_secret": "youtube_client_secret.json",
            "video": "video.mp4", "metadata": "youtube.md", "thumbnail": "thumbnail.png"},
     "en": {"id": "UCArsbAuJWz26CVbkYJAk7EA", "name": "Tram AI Channel", "lang": "en", "token": "youtube_en_token.pickle",
+           "client_secret": "youtube_en_client_secret.json",
            "video": "video_en.mp4", "metadata": "youtube_channel_en.md", "thumbnail": "thumbnail_en.png"},
 }
 CHANNEL = CHANNELS["vi"]
 TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
+CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, CHANNEL["client_secret"])
 EXPECT_CHANNEL = CHANNEL["id"]
 
 
 def use_channel(key):
-    """Chọn kênh đích: token + ID kênh dùng để chặn đăng nhầm."""
-    global CHANNEL, TOKEN_FILE, EXPECT_CHANNEL
+    """Chọn kênh đích: OAuth client + token + ID kênh dùng để chặn đăng nhầm."""
+    global CHANNEL, TOKEN_FILE, CLIENT_SECRET_FILE, EXPECT_CHANNEL
     CHANNEL = CHANNELS[key]
     TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
+    CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, CHANNEL["client_secret"])
     EXPECT_CHANNEL = CHANNEL["id"]
 
 
@@ -211,7 +215,7 @@ def main():
     parser.add_argument("--metadata", default=None, help="Đường dẫn file metadata (mặc định theo --channel)")
     parser.add_argument("--category", default="28", help="YouTube category ID (mặc định 28 = Science & Technology)")
     parser.add_argument("--privacy", default="public", choices=["public", "unlisted", "private"], help="Mặc định public")
-    parser.add_argument("--client-secret", default=CLIENT_SECRET_FILE)
+    parser.add_argument("--client-secret", default=None, help="OAuth client JSON (mặc định theo --channel)")
     parser.add_argument(
         "--thumbnail",
         default=None,
@@ -232,6 +236,7 @@ def main():
     args = parser.parse_args()
     global EXPECT_CHANNEL
     use_channel(args.channel)
+    args.client_secret = args.client_secret or CLIENT_SECRET_FILE
     if args.expect_channel is not None:
         EXPECT_CHANNEL = args.expect_channel
 

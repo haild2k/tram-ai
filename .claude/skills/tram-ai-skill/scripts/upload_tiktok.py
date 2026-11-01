@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Đăng video.mp4 lên TikTok @tram.ai.vn (Trạm AI) qua Content Posting API (Direct Post).
+"""Đăng video.mp4 lên TikTok @tram.ai.channel (Trạm AI) qua Content Posting API (Direct Post).
 
 Bản copy của upload-tiktok-video cho kênh Trạm AI. Credentials nằm NGOÀI repo:
   $TRAM_AI_CREDS/tiktok/tiktok_credentials.json   client_key/secret + redirect_uri (github.io)
@@ -38,7 +38,7 @@ except Exception:
     pass
 
 CREDS_DIR = os.path.join(os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials"))), "tiktok")
-EXPECT_USERNAME = "tram.ai.vn"
+EXPECT_USERNAME = "tram.ai.channel"
 CRED_FILE = os.path.join(CREDS_DIR, "tiktok_credentials.json")
 TOKEN_FILE = os.path.join(CREDS_DIR, "tiktok_token.json")
 PENDING_FILE = os.path.join(CREDS_DIR, ".tiktok_auth_pending.json")
@@ -277,7 +277,7 @@ def get_valid_token(cred):
         if refreshed:
             return refreshed
     sys.exit(
-        "TikTok: refresh token hết hạn / chưa đăng nhập. Đăng nhập lại tài khoản tram.ai.vn:\n"
+        "TikTok: refresh token hết hạn / chưa đăng nhập. Đăng nhập lại tài khoản tram.ai.channel:\n"
         "  python3 .claude/skills/tram-ai-skill/scripts/tiktok_web_auth.py url\n"
         "  python3 .claude/skills/tram-ai-skill/scripts/tiktok_web_auth.py complete '<URL callback>'"
     )

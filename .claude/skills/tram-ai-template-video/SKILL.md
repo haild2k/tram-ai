@@ -238,7 +238,7 @@ Quy tắc slot:
 - outro: `brand` = `"Trạm AI"`, `logo` = `"assets/logo.png"`. Kênh mạng xã hội Trạm AI
   (đưa vào `socials[]`, mỗi phần tử `{plat, handle}`):
     - `{ "plat": "YouTube", "handle": "youtube.com/@tram-ai" }`
-    - `{ "plat": "TikTok", "handle": "tiktok.com/@tram.ai.vn" }`
+    - `{ "plat": "TikTok", "handle": "tiktok.com/@tram.ai.channel" }`
     - `{ "plat": "Facebook", "handle": "Trạm AI" }`
 
 ### ⚠️ Quy tắc TTS tiếng Việt cho `voiceText` (BẮT BUỘC)

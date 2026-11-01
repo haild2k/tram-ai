@@ -19,7 +19,7 @@ chương, ảnh + crop logo, template động 16:9 `template-scaffold-long.html`
   phải điểm cần cảnh báo khi gửi duyệt.
 - Thương hiệu, nơi lưu, kịch bản đăng, đăng 3 nền tảng, báo kết quả → theo
   `SKILL.md` của skill này (KHÔNG gọi `create-youtube-content` / `upload-*-video`
-  nhắc trong base, **CÓ** đăng TikTok).
+  nhắc trong base, TikTok đang **tạm dừng** — không đăng).
 
 ## Ba loại video AI
 
@@ -84,10 +84,10 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
   `⏱ Chapters:` dịch tên chương) theo SKILL.md.
 - **Bước 11**: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --image <outputDir>/source-images/img-hook.jpg [--title "<≤45 ký tự>"]`.
 - **Bước 11b (DUYỆT)**: giữ nguyên mẫu bản duyệt, đổi dòng cuối thành
-  `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook + TikTok, rồi dựng và đăng bản tiếng Anh lên Tram AI Channel, hoặc ghi rõ cần sửa gì.`
+  `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook, rồi dựng và đăng bản tiếng Anh lên Tram AI Channel, hoặc ghi rõ cần sửa gì.`
   KHÔNG đăng gì trước khi user duyệt rõ ràng.
 - **Bước 12**: đăng theo SKILL.md mục **Đăng 3 nền tảng** (YouTube video dài có
-  chapters → `youtube_i18n.py` phụ đề + metadata Anh → Facebook video thường → TikTok).
+  chapters → `youtube_i18n.py` phụ đề + metadata Anh → Facebook video thường; TikTok tạm dừng).
   COVER_MS như `media-skill` Bước 5b.
 - **Bước 12b**: dựng `video_en.mp4` rồi đăng Tram AI Channel theo SKILL.md mục
   **Bản video tiếng Anh** — lần duyệt ở Bước 11b đã bao gồm bước này, không hỏi lại.

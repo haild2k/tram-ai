@@ -21,7 +21,8 @@ import argparse
 import os
 import sys
 
-from upload_youtube import CHANNELS, CLIENT_SECRET_FILE, get_credentials, parse_youtube_md, save_credentials, use_channel
+import upload_youtube
+from upload_youtube import CHANNELS, get_credentials, parse_youtube_md, save_credentials, use_channel
 
 TRACK_NAME = {"vi": "Tiếng Việt", "en": "English"}
 
@@ -29,7 +30,7 @@ TRACK_NAME = {"vi": "Tiếng Việt", "en": "English"}
 def client(ch):
     from googleapiclient.discovery import build
 
-    creds = get_credentials(CLIENT_SECRET_FILE, save=False)  # chỉ lưu sau khi đúng kênh
+    creds = get_credentials(upload_youtube.CLIENT_SECRET_FILE, save=False)  # chỉ lưu sau khi đúng kênh
     yt = build("youtube", "v3", credentials=creds)
     ids = {c["id"]: c["snippet"]["title"] for c in yt.channels().list(part="snippet", mine=True).execute().get("items", [])}
     if ch["id"] not in ids:

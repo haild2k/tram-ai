@@ -87,10 +87,20 @@ thích 1 vế lần đầu; tên mô hình/hàm trong code để monospace.
 
 ## 5. Kịch bản đăng riêng cho loại `paper`
 
-- Slug `paper-<tên-ngắn>`. **Tiêu đề (YouTube, Facebook, dòng đầu TikTok, `metadata.title`)
-  = `[Explained] <tên paper NGUYÊN VĂN tiếng Anh>`** — không dịch, không thêm ý,
-  vd `[Explained] TradingAgents: Multi-Agents LLM Financial Trading Framework`.
-  Thumbnail cũng vậy: nhãn `EXPLAINED` + tên paper nguyên văn (+ arXiv id, số sao repo).
+- Slug `paper-<tên-ngắn>`. Tiêu đề **bản Việt và bản Anh phải khác nhau** ở nhãn đầu —
+  không dùng `[Explained]` cho bản Việt. Tên paper giữ NGUYÊN VĂN tiếng Anh ở cả hai
+  (không dịch, không thêm ý):
+
+  | Bản | Chỗ dùng | Tiêu đề | Nhãn thumbnail |
+  | --- | --- | --- | --- |
+  | Việt | `metadata.title`, `youtube.md`, `facebook.md`, dòng đầu `tiktok.md` | `[Giải thích] <tên paper>` | `GIẢI THÍCH PAPER` (`thumbnail.png`) |
+  | Anh | `youtube_en.md`, `facebook_en.md`, `youtube_channel_en.md`, `metadata.title` của `<slug>-en` | `[Explained] <tên paper>` | `EXPLAINED` (`thumbnail_en.png`) |
+
+  vd Việt `[Giải thích] TradingAgents: Multi-Agents LLM Financial Trading Framework`,
+  Anh `[Explained] TradingAgents: Multi-Agents LLM Financial Trading Framework`.
+  Thumbnail: tên paper nguyên văn (+ arXiv id, số sao repo) ở cả hai; dòng phụ bản Việt
+  viết tiếng Việt (`arXiv 2412.20138 · 117K sao GitHub`). Vì nhãn khác nhau nên bản Anh
+  render thumbnail riêng (`Thumb.tsx` trong `src/videos/<slug>-en/`), KHÔNG copy `thumbnail.png`.
 - Mô tả YouTube: 3–4 đoạn (vấn đề → kiến trúc → kết quả có số → repo) + câu
   "nghiên cứu học thuật…" nếu chủ đề nhạy cảm (tài chính, y tế).
 - `Nguồn tham khảo: arXiv, GitHub <org>, Hugging Face Papers`.

@@ -195,12 +195,12 @@ export const RightArrow: React.FC<{ p: number; color?: string; size?: number }> 
 /* OUTRO ngang chuẩn Trạm AI ---------------------------------------------- */
 const SOCIALS = [
   { plat: "YouTube", handle: "youtube.com/@tram-ai" },
-  { plat: "TikTok", handle: "tiktok.com/@tram.ai.vn" },
+  { plat: "TikTok", handle: "tiktok.com/@tram.ai.channel" },
   { plat: "Facebook", handle: "facebook.com/tram.ai.channel" },
 ];
 
-/** Bản tiếng Anh dùng kênh YouTube riêng. */
-export const SOCIALS_EN = SOCIALS.map((s) => (s.plat === "YouTube" ? { ...s, handle: "youtube.com/@tram-ai-channel" } : s));
+/** Bản tiếng Anh (Tram AI Channel): outro chỉ có kênh YouTube riêng. */
+export const SOCIALS_EN = [{ plat: "YouTube", handle: "youtube.com/@tram-ai-channel" }];
 
 export const OutroWide: React.FC<{ brand?: string; tagline?: string; socials?: typeof SOCIALS }> = ({
   brand = "Trạm AI",
@@ -238,8 +238,7 @@ export const OutroWide: React.FC<{ brand?: string; tagline?: string; socials?: t
                 }}
               >
                 <div style={{ fontSize: 26, fontWeight: 800, color: C.accent2 }}>{s.plat}</div>
-                {/* Link kênh tiếng Anh dài hơn: chữ nhỏ lại để hàng thẻ không tràn lề phải */}
-                <div style={{ fontSize: socials === SOCIALS ? 25 : 23, fontWeight: 600, marginTop: 4, whiteSpace: "nowrap" }}>{s.handle}</div>
+                <div style={{ fontSize: socials.length === 1 ? 32 : 25, fontWeight: 600, marginTop: 4, whiteSpace: "nowrap" }}>{s.handle}</div>
               </div>
             ))}
           </div>

@@ -195,11 +195,11 @@ export const Arrow: React.FC<{ p: number }> = ({ p }) => (
 /* OUTRO chuẩn Trạm AI ---------------------------------------------------- */
 const SOCIALS = [
   { plat: "YouTube", handle: "youtube.com/@tram-ai" },
-  { plat: "TikTok", handle: "tiktok.com/@tram.ai.vn" },
+  { plat: "TikTok", handle: "tiktok.com/@tram.ai.channel" },
   { plat: "Facebook", handle: "facebook.com/tram.ai.channel" },
 ];
 
-export const SOCIALS_EN = SOCIALS.map((s) => (s.plat === "YouTube" ? { ...s, handle: "youtube.com/@tram-ai-channel" } : s));
+export const SOCIALS_EN = [{ plat: "YouTube", handle: "youtube.com/@tram-ai-channel" }];
 
 export const Outro: React.FC<{ brand?: string; tagline?: React.ReactNode; socials?: typeof SOCIALS }> = ({
   brand = "Trạm AI",

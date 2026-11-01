@@ -21,6 +21,7 @@ CREDS = os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.di
 HERE = os.path.dirname(os.path.abspath(__file__))
 FB_PAGE = "1430978420097668"
 G = "https://graph.facebook.com/v21.0"
+TIKTOK_PAUSED = True  # TikTok đang tạm dừng đăng (pending) — bật lại: False
 
 
 def youtube(key="vi"):
@@ -82,7 +83,9 @@ def tiktok():
 
 def main():
     bad = 0
-    for name, fn in (("YouTube", youtube), ("YouTubeEN", lambda: youtube("en")), ("Facebook", facebook), ("TikTok", tiktok)):
+    if TIKTOK_PAUSED:
+        print(f"⏸ {'TikTok':9} tạm dừng đăng (pending) — bỏ qua kiểm tra")
+    for name, fn in (("YouTube", youtube), ("YouTubeEN", lambda: youtube("en")), ("Facebook", facebook)) + ((("TikTok", tiktok),) if not TIKTOK_PAUSED else ()):
         try:
             print(f"✓ {name:9} {fn()}")
         except Exception as e:  # noqa: BLE001 — báo lỗi từng nền tảng, không dừng cả loạt

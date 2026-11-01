@@ -89,8 +89,8 @@ Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
 4. `COVER_MS` theo `media-skill` Bước 5b.
 4b. Bộ file YouTube Studio (`youtube-studio/`: phụ đề VI/EN + kịch bản đọc tiếng Anh, chưa lồng tiếng EN)
    theo `SKILL.md` mục **Bộ file YouTube Studio**.
-5. Đăng **luôn, không hỏi**: YouTube → Facebook → TikTok theo `SKILL.md` mục **Đăng
-   3 nền tảng**.
+5. Đăng **luôn, không hỏi**: YouTube → Facebook theo `SKILL.md` mục **Đăng
+   3 nền tảng** (TikTok tạm dừng — không đăng).
 6. Dựng `video_en.mp4` rồi đăng Tram AI Channel, **không hỏi**, theo `SKILL.md` mục
    **Bản video tiếng Anh**.
 7. Báo kết quả theo `SKILL.md`, thêm các dòng tóm tắt của `media-remote-skill`
