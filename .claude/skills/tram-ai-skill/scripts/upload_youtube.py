@@ -24,20 +24,30 @@ import re
 import sys
 
 CREDS_DIR = os.environ.get("TRAM_AI_CREDS", os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../credentials")))
-SCOPES = [
+BASE_SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
-    "https://www.googleapis.com/auth/youtube.force-ssl",  # phụ đề + localizations (youtube_i18n.py)
 ]
+FORCE_SSL = "https://www.googleapis.com/auth/youtube.force-ssl"  # phụ đề (youtube_i18n.py)
 CHANNELS = {
     "vi": {"id": "UC-OcFyd7wjGQ69ur92o6Rzg", "name": "Trạm AI", "lang": "vi", "token": "youtube_token.pickle",
-           "client_secret": "youtube_client_secret.json",
+           "client_secret": "youtube_client_secret.json", "subtitles": False,  # kênh Việt: KHÔNG tải phụ đề
            "video": "video.mp4", "metadata": "youtube.md", "thumbnail": "thumbnail.png"},
     "en": {"id": "UCArsbAuJWz26CVbkYJAk7EA", "name": "Tram AI Channel", "lang": "en", "token": "youtube_en_token.pickle",
-           "client_secret": "youtube_en_client_secret.json",
+           "client_secret": "youtube_en_client_secret.json", "subtitles": True,
            "video": "video_en.mp4", "metadata": "youtube_channel_en.md", "thumbnail": "thumbnail_en.png"},
 }
 CHANNEL = CHANNELS["vi"]
+
+
+def scopes_for(ch):
+    """Kênh có tải phụ đề mới xin quyền force-ssl; YT_NO_I18N=1 tắt hẳn (giữ tương thích cũ)."""
+    if ch.get("subtitles") and os.environ.get("YT_NO_I18N") != "1":
+        return BASE_SCOPES + [FORCE_SSL]
+    return list(BASE_SCOPES)
+
+
+SCOPES = scopes_for(CHANNEL)
 TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
 CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, CHANNEL["client_secret"])
 EXPECT_CHANNEL = CHANNEL["id"]
@@ -45,8 +55,9 @@ EXPECT_CHANNEL = CHANNEL["id"]
 
 def use_channel(key):
     """Chọn kênh đích: OAuth client + token + ID kênh dùng để chặn đăng nhầm."""
-    global CHANNEL, TOKEN_FILE, CLIENT_SECRET_FILE, EXPECT_CHANNEL
+    global CHANNEL, TOKEN_FILE, CLIENT_SECRET_FILE, EXPECT_CHANNEL, SCOPES
     CHANNEL = CHANNELS[key]
+    SCOPES = scopes_for(CHANNEL)
     TOKEN_FILE = os.path.join(CREDS_DIR, CHANNEL["token"])
     CLIENT_SECRET_FILE = os.path.join(CREDS_DIR, CHANNEL["client_secret"])
     EXPECT_CHANNEL = CHANNEL["id"]

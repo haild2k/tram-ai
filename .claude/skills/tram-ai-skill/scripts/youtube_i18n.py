@@ -66,6 +66,8 @@ def main():
     ap.add_argument("--channel", default="vi", choices=list(CHANNELS))
     a = ap.parse_args()
     ch = CHANNELS[a.channel]
+    if not ch.get("subtitles"):
+        sys.exit(f"Kênh {ch['name']}: KHÔNG tải phụ đề (quy định của user) — bỏ qua youtube_i18n.py cho kênh này.")
     use_channel(a.channel)
 
     studio = os.path.join(a.dir, "youtube-studio")

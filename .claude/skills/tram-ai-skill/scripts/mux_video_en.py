@@ -8,6 +8,7 @@ youtube_channel_en.md (metadata đăng Tram AI Channel: youtube_en.md + mốc ch
 Phụ đề và mốc khớp video_en.mp4 — khác youtube-studio/subtitles_en.srt + youtube_en.md, vốn khớp video.mp4.
 
   python3 mux_video_en.py --dir <outputDir> --slug <slug>-en --seq <thư mục ảnh> [--remotion-dir remotion]
+  python3 mux_video_en.py --dir <outputDir> --slug <slug>-en --rendered   # video_en.mp4 đã render thẳng (kèm tiếng)
 """
 import argparse
 import glob
@@ -43,26 +44,7 @@ def write_channel_md(d, chapter_lines):
         f.write(text)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--dir", required=True)
-    ap.add_argument("--slug", required=True)
-    ap.add_argument("--seq", required=True)
-    ap.add_argument("--remotion-dir", default="remotion")
-    a = ap.parse_args()
-
-    src = os.path.join(a.remotion_dir, "src", "videos", a.slug)
-    voice = os.path.join(a.remotion_dir, "public", "videos", a.slug, "voice")
-    scenes = json.load(open(os.path.join(src, "script.json"), encoding="utf-8"))["scenes"]
-    dur = json.load(open(os.path.join(src, "durations.json")))
-
-    starts, frame = [], 0
-    for i, sc in enumerate(scenes):
-        starts.append(frame / FPS)
-        hold = OUTRO_HOLD_SEC if i == len(scenes) - 1 else PAD_SEC
-        frame += math.ceil((dur[sc["id"]] + hold) * FPS)
-    total = frame / FPS
-
+def mux(a, frame, scenes, starts, total, voice):
     frames = glob.glob(os.path.join(a.seq, "element-*.jpeg"))
     if len(frames) != frame:
         raise SystemExit(f"chuỗi ảnh có {len(frames)} khung, timeline cần {frame}")
@@ -79,6 +61,39 @@ def main():
             "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart",
             os.path.join(a.dir, "video_en.mp4")]
     subprocess.run(cmd, check=True)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dir", required=True)
+    ap.add_argument("--slug", required=True)
+    ap.add_argument("--seq", help="thư mục chuỗi ảnh (ghép giọng bằng ffmpeg)")
+    ap.add_argument("--rendered", action="store_true",
+                    help="video_en.mp4 đã render thẳng kèm tiếng (remotion render … mp4) — chỉ sinh chương/phụ đề/md")
+    ap.add_argument("--remotion-dir", default="remotion")
+    a = ap.parse_args()
+
+    src = os.path.join(a.remotion_dir, "src", "videos", a.slug)
+    voice = os.path.join(a.remotion_dir, "public", "videos", a.slug, "voice")
+    scenes = json.load(open(os.path.join(src, "script.json"), encoding="utf-8"))["scenes"]
+    dur = json.load(open(os.path.join(src, "durations.json")))
+
+    starts, frame = [], 0
+    for i, sc in enumerate(scenes):
+        starts.append(frame / FPS)
+        hold = OUTRO_HOLD_SEC if i == len(scenes) - 1 else PAD_SEC
+        frame += math.ceil((dur[sc["id"]] + hold) * FPS)
+    total = frame / FPS
+
+    if a.rendered:
+        got = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                                             "-of", "csv=p=0", os.path.join(a.dir, "video_en.mp4")]))
+        if abs(got - total) > 0.5:
+            raise SystemExit(f"video_en.mp4 dài {got:.2f}s, timeline cần {total:.2f}s")
+    elif not a.seq:
+        raise SystemExit("cần --seq hoặc --rendered")
+    else:
+        mux(a, frame, scenes, starts, total, voice)
 
     chapter_lines = [f"{stamp(st)} {sc.get('chapter') or 'Intro'}" for i, (sc, st) in enumerate(zip(scenes, starts))
                       if sc.get("chapter") or i == 0]

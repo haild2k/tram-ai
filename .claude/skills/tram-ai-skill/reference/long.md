@@ -87,7 +87,7 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
   `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook, rồi dựng và đăng bản tiếng Anh lên Tram AI Channel, hoặc ghi rõ cần sửa gì.`
   KHÔNG đăng gì trước khi user duyệt rõ ràng.
 - **Bước 12**: đăng theo SKILL.md mục **Đăng 3 nền tảng** (YouTube video dài có
-  chapters → `youtube_i18n.py` phụ đề + metadata Anh → Facebook video thường; TikTok tạm dừng).
+  chapters, KHÔNG tải phụ đề → Facebook video thường; TikTok tạm dừng).
   COVER_MS như `media-skill` Bước 5b.
 - **Bước 12b**: dựng `video_en.mp4` rồi đăng Tram AI Channel theo SKILL.md mục
   **Bản video tiếng Anh** — lần duyệt ở Bước 11b đã bao gồm bước này, không hỏi lại.
