@@ -30,3 +30,6 @@ videos/
 # Dữ liệu sinh ra bởi youtube-topic-research
 research/
 credentials/
+
+# vendored python libs (cài local, không commit)
+.claude/skills/youtube-topic-research/.pylib/
