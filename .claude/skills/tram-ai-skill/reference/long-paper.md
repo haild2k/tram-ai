@@ -42,7 +42,8 @@ curl -sL https://huggingface.co/papers/<id>                     # upvote, ngày 
    phân tích, nửa "Decision" của hình trader).
 4. Mỗi hình chỉ xuất hiện ở cảnh **đang nói đúng phần đó**; sơ đồ tổng thể dùng
    `Figure` với `hl` (vùng tô sáng, toạ độ % theo ảnh) chạy theo lời đọc.
-   Mọi hình gốc có `FigCaption` "… — <tên paper / README repo>".
+   `FigCaption` (nếu dùng) chỉ mô tả hình, **KHÔNG ghi nguồn** (bỏ `— <tên paper / README repo>`);
+   nguồn hình ghi trong `CREDITS.md`.
 
 ## 3. Dàn ý chuẩn (thời lượng tuỳ nội dung — không giới hạn; thường 45+ cảnh, 10–14 chương)
 
