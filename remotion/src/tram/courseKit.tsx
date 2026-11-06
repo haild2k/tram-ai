@@ -8,7 +8,7 @@ import { Chip, Composer, CourseLang, CueProvider, Head, InfoCard, LessonOpen, Pr
 import { C, fontFamily, rise } from "./theme";
 import { defineLong } from "./TramLong";
 import { FPS, timeline } from "./TramShort";
-import { Card, RightArrow, SOCIALS_EN, OutroWide, WH, WK, WStage } from "./wide";
+import { Box, Card, Figure, RightArrow, SOCIALS_EN, OutroWide, WH, WK, WStage } from "./wide";
 import { createContext, useContext } from "react";
 
 export type Lang = "vi" | "en";
@@ -45,6 +45,10 @@ export type Scene = {
   sub?: Bi;
   lessons?: { num: string; t: Bi; pts: Bi[]; at?: Bi }[];
   current?: number;
+  /** kind "fig": tỉ lệ rộng/cao ảnh, chiều cao tối đa, vùng tô sáng (toạ độ % ảnh) bật theo cụm `at`. */
+  ar?: number;
+  figH?: number;
+  hl?: { at: Bi; box: Box }[];
 };
 export type Spec = {
   slug: string;
@@ -528,7 +532,46 @@ const Summary: K = ({ s }) => {
   );
 };
 
+/** Hình gốc (paper) lớn trên nền trắng + tiêu đề; `items` (nếu có) là cột ý bên phải; `hl` tô sáng từng vùng theo lời đọc. */
+const Fig: K = ({ s, img }) => {
+  const { e, R, P, T, on } = useKit(s);
+  const items = s.items ?? [];
+  const ar = s.ar ?? 1.6;
+  const maxW = items.length ? 1060 : 1660;
+  const h = Math.min(s.figH ?? 640, maxW / ar);
+  let box: Box | undefined;
+  let hlP = 0;
+  for (const x of s.hl ?? []) {
+    const p = on(T(x.at));
+    if (p > 0) {
+      box = x.box;
+      hlP = p;
+    }
+  }
+  return (
+    <WStage justify="flex-start" style={{ paddingTop: 70 }}>
+      <Head p={e(0)} n={s.n ? T(s.n) : undefined} kicker={T(s.kicker)} size={s.size ?? 50}>
+        {R(s.title)}
+      </Head>
+      <Row gap={50} style={{ marginTop: 10, alignItems: "center", justifyContent: items.length ? "flex-start" : "center", flex: 1 }}>
+        <Figure src={`${img}/${s.img}`} p={e(0.2)} ar={ar} height={h} hl={box} hlP={hlP} pad={16} />
+        {items.length > 0 && (
+          <div style={{ flex: 1 }}>
+            {items.map((it, i) => (
+              <Pt key={i} p={P(it.at, i, items.length)} mark={it.mark ? T(it.mark) : i + 1} color={it.accent ? ACC[it.accent] : C.accent2} size={ar < 1 ? 38 : 30} sub={it.sub ? R(it.sub) : undefined}>
+                {R(it.t)}
+              </Pt>
+            ))}
+          </div>
+        )}
+      </Row>
+      {s.caption && <div style={{ opacity: e(0.6), fontSize: 23, color: C.muted, textAlign: "center", marginTop: 8 }}>{T(s.caption)}</div>}
+    </WStage>
+  );
+};
+
 const KINDS: Record<string, K> = {
+  fig: Fig,
   hook: Hook,
   map: Map,
   lesson: Lesson,

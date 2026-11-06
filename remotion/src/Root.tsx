@@ -1,3 +1,34 @@
+import { Gpt6CyberEn, Gpt6CyberEnThumb } from "./videos/gpt6-cyber-06-11-en";
+import { ClaudeVaultEn, ClaudeVaultEnThumb } from "./videos/claude-vault-06-11-en";
+import { AiVietNam45trEn, AiVietNam45trEnThumb } from "./videos/ai-viet-nam-45tr-06-11-en";
+import { MaXiaoAiEn, MaXiaoAiEnThumb } from "./videos/ma-xiao-ai-06-11-en";
+import { Gpt6Cyber, Gpt6CyberThumb } from "./videos/gpt6-cyber-06-11";
+import { ClaudeVault, ClaudeVaultThumb } from "./videos/claude-vault-06-11";
+import { AiVietNam45tr, AiVietNam45trThumb } from "./videos/ai-viet-nam-45tr-06-11";
+import { MaXiaoAi, MaXiaoAiThumb } from "./videos/ma-xiao-ai-06-11";
+import { KimiK31WeightsEn, KimiK31WeightsEnThumb } from "./videos/kimi-k31-weights-05-11-en";
+import { PhimAiBoiThucEn, PhimAiBoiThucEnThumb } from "./videos/phim-ai-boi-thuc-05-11-en";
+import { KimiK31Weights, KimiK31WeightsThumb } from "./videos/kimi-k31-weights-05-11";
+import { PhimAiBoiThuc, PhimAiBoiThucThumb } from "./videos/phim-ai-boi-thuc-05-11";
+import { OpenaiImages26En, OpenaiImages26EnThumb } from "./videos/openai-images-26-05-11-en";
+import { OpenaiMuaPierreEn, OpenaiMuaPierreEnThumb } from "./videos/openai-mua-pierre-05-11-en";
+import { LoHongLinuxEn, LoHongLinuxEnThumb } from "./videos/lo-hong-linux-05-11-en";
+import { OpenaiImages26, OpenaiImages26Thumb } from "./videos/openai-images-26-05-11";
+import { OpenaiMuaPierre, OpenaiMuaPierreThumb } from "./videos/openai-mua-pierre-05-11";
+import { LoHongLinux, LoHongLinuxThumb } from "./videos/lo-hong-linux-05-11";
+import { AiQuanSu, AiQuanSuThumb } from "./videos/ai-quan-su-05-11";
+import { AiQuanSuEn, AiQuanSuEnThumb } from "./videos/ai-quan-su-05-11-en";
+import { GoogleAiArenaEn, GoogleAiArenaEnThumb } from "./videos/google-ai-arena-04-11-en";
+import { AnthropicTuCaiTienEn, AnthropicTuCaiTienEnThumb } from "./videos/anthropic-tu-cai-tien-04-11-en";
+import { GoogleAiArena, GoogleAiArenaThumb } from "./videos/google-ai-arena-04-11";
+import { AnthropicTuCaiTien, AnthropicTuCaiTienThumb } from "./videos/anthropic-tu-cai-tien-04-11";
+import { CacPhuongPhapRag, CacPhuongPhapRagThumb, CacPhuongPhapRagEn, CacPhuongPhapRagEnThumb } from "./videos/cac-phuong-phap-rag-04-11";
+import { PhimAiDayChuyenEn, PhimAiDayChuyenEnThumb } from "./videos/phim-ai-day-chuyen-04-11-en";
+import { GoogleTruongHocEn, GoogleTruongHocEnThumb } from "./videos/google-truong-hoc-04-11-en";
+import { SiriTiengVietEn, SiriTiengVietEnThumb } from "./videos/siri-tieng-viet-04-11-en";
+import { PhimAiDayChuyen, PhimAiDayChuyenThumb } from "./videos/phim-ai-day-chuyen-04-11";
+import { GoogleTruongHoc, GoogleTruongHocThumb } from "./videos/google-truong-hoc-04-11";
+import { SiriTiengViet, SiriTiengVietThumb } from "./videos/siri-tieng-viet-04-11";
 import { TokenLivestream, TokenLivestreamThumb } from "./videos/token-livestream-03-11";
 import { TokenLivestreamEn, TokenLivestreamEnThumb } from "./videos/token-livestream-03-11-en";
 import { DeepseekSuperAgent, DeepseekSuperAgentThumb } from "./videos/deepseek-sieu-tac-nhan-03-11";
@@ -28,6 +59,54 @@ import { GithubCpuAi, GithubCpuAiThumb } from "./videos/github-cpu-ai-31-10";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <KimiK31Weights />
+      <KimiK31WeightsThumb />
+      <KimiK31WeightsEn />
+      <KimiK31WeightsEnThumb />
+      <PhimAiBoiThuc />
+      <PhimAiBoiThucEn />
+      <PhimAiBoiThucEnThumb />
+      <PhimAiBoiThucThumb />
+      <Gpt6CyberEn />
+      <Gpt6CyberEnThumb />
+      <ClaudeVaultEn />
+      <ClaudeVaultEnThumb />
+      <AiVietNam45trEn />
+      <AiVietNam45trEnThumb />
+      <MaXiaoAiEn />
+      <MaXiaoAiEnThumb />
+      <Gpt6Cyber />
+      <Gpt6CyberThumb />
+      <ClaudeVault />
+      <ClaudeVaultThumb />
+      <AiVietNam45tr />
+      <AiVietNam45trThumb />
+      <MaXiaoAi />
+      <MaXiaoAiThumb />
+      <OpenaiImages26 />
+      <OpenaiImages26En />
+      <OpenaiImages26EnThumb />
+      <OpenaiImages26Thumb />
+      <OpenaiMuaPierre />
+      <OpenaiMuaPierreThumb />
+      <OpenaiMuaPierreEn />
+      <OpenaiMuaPierreEnThumb />
+      <LoHongLinux />
+      <AiQuanSu />
+      <AiQuanSuThumb />
+      <AiQuanSuEn />
+      <AiQuanSuEnThumb />
+      <LoHongLinuxEn />
+      <LoHongLinuxEnThumb />
+      <LoHongLinuxThumb />
+      <GoogleAiArena />
+      <GoogleAiArenaThumb />
+      <AnthropicTuCaiTien />
+      <AnthropicTuCaiTienThumb />
+      <GoogleAiArenaEn />
+      <GoogleAiArenaEnThumb />
+      <AnthropicTuCaiTienEn />
+      <AnthropicTuCaiTienEnThumb />
       <TokenLivestream />
       <TokenLivestreamThumb />
       <TokenLivestreamEn />
@@ -40,6 +119,22 @@ export const RemotionRoot: React.FC = () => {
       <GoldmanClaudeCodeThumb />
       <GoldmanClaudeCodeEn />
       <GoldmanClaudeCodeEnThumb />
+      <CacPhuongPhapRag />
+      <CacPhuongPhapRagThumb />
+      <CacPhuongPhapRagEn />
+      <CacPhuongPhapRagEnThumb />
+      <PhimAiDayChuyen />
+      <PhimAiDayChuyenThumb />
+      <PhimAiDayChuyenEn />
+      <PhimAiDayChuyenEnThumb />
+      <GoogleTruongHoc />
+      <GoogleTruongHocThumb />
+      <GoogleTruongHocEn />
+      <GoogleTruongHocEnThumb />
+      <SiriTiengViet />
+      <SiriTiengVietThumb />
+      <SiriTiengVietEn />
+      <SiriTiengVietEnThumb />
       <ToanHocAi />
       <ToanHocAiThumb />
       <ToanHocAiEn />
