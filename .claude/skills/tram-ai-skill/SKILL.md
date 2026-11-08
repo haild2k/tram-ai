@@ -1,6 +1,6 @@
 ---
 name: tram-ai-skill
-description: Sản xuất video tiếng Việt cho kênh TRẠM AI (tin tức + giải thích về trí tuệ nhân tạo) rồi đăng lên YouTube + Facebook (TikTok đang TẠM DỪNG — pending, chưa đăng), dùng credentials RIÊNG của Trạm AI. Chữ hiển thị trên slide/hình + lời đọc bằng TIẾNG VIỆT. Đăng xong bản Việt thì dựng tiếp bản video tiếng Anh (chữ trên hình + giọng đọc tiếng Anh) rồi đăng lên kênh YouTube TRAM AI CHANNEL (@tram-ai-channel). Bản Việt KHÔNG tải phụ đề lên YouTube. Hai chế độ — SHORT 9:16 (~90–120s, 1 tin/1 chủ đề AI: nghiên cứu mở rộng nhiều báo → dựng theo 1 trong 2 style: "remotion" (motion graphics Remotion, MẶC ĐỊNH) hoặc "template" (template động HyperFrames, khi user nói "style template") → TTS server từ xa → tự đăng luôn, không duyệt) và LONG 16:9 (không giới hạn thời lượng, có chương, tổng hợp + so sánh tin AI trong N ngày; research đa nguồn → bảng so sánh → kịch bản nhiều chương → DỪNG CHỜ DUYỆT → mới đăng). Logo, màu, footer, outro, CTA, hashtag theo thương hiệu Trạm AI. Trigger khi user muốn "làm video Trạm AI", "đăng kênh Trạm AI", "làm short AI", "video tin AI", "tin AI tuần này", "làm video dài Trạm AI", "so sánh công cụ AI", "tram ai skill". Input: chủ đề / URL / nội dung (short) hoặc loại video dài (1 tin AI tuần · 2 so sánh công cụ AI · 3 chủ đề AI tự chọn).
+description: Sản xuất video tiếng Việt cho kênh TRẠM AI (tin tức + giải thích về trí tuệ nhân tạo) rồi đăng lên YouTube + Facebook (TikTok đang TẠM DỪNG — pending, chưa đăng), dùng credentials RIÊNG của Trạm AI. Chữ hiển thị trên slide/hình + lời đọc bằng TIẾNG VIỆT. Đăng xong bản Việt thì — CHỈ KHI chủ đề phổ biến toàn cầu (không riêng cho người Việt) — dựng tiếp bản video tiếng Anh (chữ trên hình + giọng đọc tiếng Anh) rồi đăng lên kênh YouTube TRAM AI CHANNEL (@tram-ai-channel). Bản Việt KHÔNG tải phụ đề lên YouTube. Hai chế độ — SHORT 9:16 (~90–120s, 1 tin/1 chủ đề AI: nghiên cứu mở rộng nhiều báo → dựng theo 1 trong 2 style: "remotion" (motion graphics Remotion, MẶC ĐỊNH) hoặc "template" (template động HyperFrames, khi user nói "style template") → TTS server từ xa → tự đăng luôn, không duyệt) và LONG 16:9 (không giới hạn thời lượng, có chương, tổng hợp + so sánh tin AI trong N ngày; research đa nguồn → bảng so sánh → kịch bản nhiều chương → DỪNG CHỜ DUYỆT → mới đăng). Logo, màu, footer, outro, CTA, hashtag theo thương hiệu Trạm AI. Trigger khi user muốn "làm video Trạm AI", "đăng kênh Trạm AI", "làm short AI", "video tin AI", "tin AI tuần này", "làm video dài Trạm AI", "so sánh công cụ AI", "tram ai skill". Input: chủ đề / URL / nội dung (short) hoặc loại video dài (1 tin AI tuần · 2 so sánh công cụ AI · 3 chủ đề AI tự chọn).
 ---
 
 # Trạm AI — sản xuất + đăng 3 nền tảng (tram-ai-skill)
@@ -34,9 +34,13 @@ Mỗi video đi qua 2 giai đoạn, luôn theo thứ tự này, cả short lẫn
 
 1. **Tiếng Việt → kênh Trạm AI**: dựng `video.mp4` rồi đăng YouTube @tram-ai +
    Facebook (mục **Đăng 3 nền tảng**; TikTok tạm dừng).
-2. **Tiếng Anh → kênh Tram AI Channel**: chỉ sau khi giai đoạn 1 đã chạy hết, dựng
-   `video_en.mp4` rồi đăng YouTube @tram-ai-channel (mục **Bản video tiếng Anh**).
-   Không đăng bản Anh lên Facebook/TikTok.
+2. **Tiếng Anh → kênh Tram AI Channel**: chỉ sau khi giai đoạn 1 đã chạy hết **và
+   chủ đề qua bộ lọc "Chủ đề toàn cầu"** (mục **Bản video tiếng Anh**), dựng
+   `video_en.mp4` rồi đăng YouTube @tram-ai-channel. Chủ đề riêng cho người Việt →
+   bỏ qua giai đoạn 2. Không đăng bản Anh lên Facebook/TikTok.
+
+Việc chọn chủ đề vẫn ưu tiên khán giả Việt như cũ — KHÔNG tìm chủ đề riêng cho kênh
+Anh. Bộ lọc chỉ quyết định chủ đề đã chọn cho bản Việt có làm thêm bản Anh hay không.
 
 Một nền tảng ở giai đoạn 1 lỗi vẫn đi tiếp giai đoạn 2; giai đoạn 2 lỗi không ảnh
 hưởng các bài đã đăng. Long: user duyệt **1 lần** ở Bước 11b, lần duyệt đó áp dụng
@@ -321,7 +325,27 @@ xoá `voice_en/scene-<id>.raw.mp3`, chạy lại), ghép `audio_en.mp3`. API You
 cho tải bản âm thanh → README thêm bước: Chỉnh sửa video → **Bản âm thanh** → Thêm →
 Tiếng Anh → `audio_en.mp3`; báo kết quả nhắc user bước này.
 
-## Bản video tiếng Anh — `video_en.mp4` → kênh Tram AI Channel (LUÔN làm, sau khi đăng bản Việt)
+## Bản video tiếng Anh — `video_en.mp4` → kênh Tram AI Channel (sau khi đăng bản Việt, CHỈ chủ đề toàn cầu)
+
+**Bộ lọc "Chủ đề toàn cầu" — chạy trước khi dựng bản Anh.** Kênh Tram AI Channel nhắm
+khán giả quốc tế, nên chỉ làm bản Anh khi người xem ngoài Việt Nam cũng quan tâm:
+
+| Làm bản Anh (`global: true`) | Bỏ qua (`global: false`) |
+| --- | --- |
+| Tin/sản phẩm/model của hãng quốc tế (OpenAI, Google, Anthropic, Meta, Nvidia, DeepSeek…) | Tin doanh nghiệp, startup, cơ quan Việt Nam (FPT, Viettel, VinAI, Zalo AI…) |
+| Giải thích khái niệm/công nghệ AI chung (embedding, agent, RAG, paper quốc tế) | Luật, chính sách, sự kiện, cuộc thi, số liệu chỉ ở Việt Nam |
+| So sánh công cụ AI dùng toàn cầu | Hướng dẫn gắn với dịch vụ/giá/thanh toán/ngôn ngữ chỉ ở Việt Nam (vd. AI đọc tiếng Việt, giá gói tại VN) |
+| Tin AI tuần lấy từ nguồn quốc tế | Video dài mà phần lớn chương là tin Việt Nam |
+
+- Chủ đề toàn cầu nhưng kịch bản Việt có đoạn góc Việt Nam → vẫn làm bản Anh, **bỏ
+  hoặc thay** đoạn đó bằng nội dung chung khi viết `script.json` bản Anh.
+- Lấy cờ `global` từ `ranked.json` của `youtube-topic-research` nếu chủ đề đến từ đó;
+  không có thì tự đánh giá theo bảng trên. Phân vân → nghiêng về **bỏ qua**.
+- `global: false` → không dựng `video_en.mp4`, không đăng Tram AI Channel (vẫn sinh
+  `youtube_en.md` / `youtube-studio/` như thường); báo kết quả ghi dòng
+  `⏭ Video tiếng Anh: bỏ qua — chủ đề riêng cho người Việt (<lý do ngắn>)`, và ghi lý do vào
+  `<outputDir>/.en_skipped` (để bước **Dọn thư mục** biết bản Anh không cần đăng).
+
 
 Style `template` chưa có pipeline tiếng Anh → bỏ qua giai đoạn này, ghi rõ ở báo kết
 quả. Style `remotion` (kể cả short, long, paper): bản tiếng Anh là **một file trong CHUNG thư mục với video tiếng Việt** (`<outputDir>/video_en.mp4`),
@@ -357,6 +381,7 @@ KHÔNG tạo thư mục `…-en-<timestamp>` riêng. Dựng hẳn lại cả ch�
    ```
    Lệnh đầu tiên dùng `video_en.mp4` + `youtube_channel_en.md` + `thumbnail_en.png`, public,
    tự chặn nếu sai kênh. Lệnh cuối chỉ tải `subtitles_video_en.srt`.
+   Đăng thành công → ghi ID vào `<outputDir>/.yt_en_done` (dùng cho bước **Dọn thư mục**).
 
 Timeline bản Anh riêng nên **`youtube_en.md` / `facebook_en.md` / `youtube-studio/subtitles_en.srt`
 khớp `video.mp4`, không khớp `video_en.mp4`** — chúng chỉ dùng cho bản tiếng Anh gắn trên video Việt.
@@ -398,6 +423,36 @@ python3 $T/upload_tiktok.py --dir <outputDir> --cover-ms <COVER_MS> --privacy SE
 - Long 16:9 trên TikTok: đăng nguyên video (giới hạn tài khoản 3600s); video
   > 1 GB → bỏ qua TikTok, ghi lý do.
 
+**Ghi dấu đã đăng** — ngay sau mỗi lần đăng thật thành công, ghi ID vào outputDir (bước
+**Dọn thư mục** dựa vào các file này; đăng lỗi thì KHÔNG ghi):
+`.yt_vi_done` (dòng `Video ID:` của YouTube kênh Việt) · `.fb_done` (dòng `➜ Video ID:` của
+Facebook) · `.yt_en_done` (Tram AI Channel, mục **Bản video tiếng Anh**).
+
+## Dọn thư mục sau khi đăng xong toàn bộ media (cả hai chế độ — LUÔN làm)
+
+Khi video đã đăng xong **mọi** nền tảng cần đăng — YouTube Trạm AI + Facebook + (Tram AI
+Channel, hoặc bản Anh được bỏ qua có `.en_skipped`) — dọn outputDir để giải phóng ổ đĩa:
+
+```bash
+T=.claude/skills/tram-ai-skill/scripts
+python3 $T/cleanup_output.py --dir <outputDir> --dry-run   # xem danh sách sẽ xoá
+python3 $T/cleanup_output.py --dir <outputDir>
+```
+
+- Xoá **mọi file `.mp4` và `.mp3`** trong outputDir (kể cả thư mục con): `video.mp4`,
+  `video_en.mp4`, `voice/*.mp3`, `clips/*.mp4`… rồi xoá thư mục con đã rỗng. Giữ lại
+  `youtube*.md`, `facebook*.md`, `tiktok.md`, `thumbnail*.png`, `*.srt`, `chapters*.txt`,
+  `research.md`, `CREDITS.md`, `script.json`, `youtube-studio/scenes.json`. Danh sách đã xoá
+  ghi vào `.cleaned`.
+- Script **tự từ chối** (thoát mã 1, không xoá gì) nếu thiếu `.yt_vi_done`, `.fb_done`, hoặc
+  thiếu cả `.yt_en_done` lẫn `.en_skipped` — tức còn nền tảng chưa đăng / đăng lỗi (vd
+  `uploadLimitExceeded` chờ đăng lại sau 24h). Khi đó KHÔNG dọn, ghi rõ ở báo kết quả; dọn
+  sau khi đăng bù xong (cron đăng bù thì chạy `cleanup_output.py` ở cuối script cron).
+  Không dùng `--force` trừ khi user bảo rõ.
+- Chỉ dọn outputDir trong `videos/tram-ai/` (script chặn đường dẫn khác). KHÔNG đụng
+  `remotion/public/videos/<slug>/` (giọng/ảnh nguồn để dựng lại khi cần).
+- TikTok đang tạm dừng nên không tính; khi mở lại TikTok → đăng TikTok trước rồi mới dọn.
+
 ## Báo kết quả (cả hai chế độ)
 
 ```markdown
@@ -413,7 +468,11 @@ python3 $T/upload_tiktok.py --dir <outputDir> --cover-ms <COVER_MS> --privacy SE
 YouTube kênh Việt: không tải phụ đề (theo quy định)
 
 ✓ Video tiếng Anh: [video_en.mp4](<outputDir>/video_en.mp4)  (<aspect> · <mm:ss>)
+   (hoặc `⏭ Video tiếng Anh: bỏ qua — chủ đề riêng cho người Việt (<lý do>)`)
 | Tram AI Channel | Short / video dài | ✓ public (thumbnail ✓/✗ · phụ đề ✓/✗) / ✗ <lý do> | https://youtu.be/<id> |
+
+🧹 Dọn thư mục: đã xoá <n> file .mp4/.mp3, giải phóng <MB> MB
+   (hoặc `⏸ Chưa dọn — còn thiếu: <nền tảng chưa đăng>`)
 ```
 
 Cộng các dòng tóm tắt riêng của từng chế độ (xem reference).
@@ -423,7 +482,7 @@ Cộng các dòng tóm tắt riêng của từng chế độ (xem reference).
 - Tài liệu nền `reference/base/*.md` giữ gần nguyên bản gốc (đã đổi thương hiệu
   + đường dẫn) để dễ đối chiếu khi bản gốc cập nhật — sửa quy tắc riêng của Trạm AI
   ở `SKILL.md` / `short.md` / `long.md`, không sửa base.
-- Scripts trong `scripts/`: `check_platforms.py` (kiểm tra), `mux_video_en.py` (ghép bản tiếng Anh), `check_frames.py`
+- Scripts trong `scripts/`: `check_platforms.py` (kiểm tra), `mux_video_en.py` (ghép bản tiếng Anh), `cleanup_output.py` (dọn .mp4/.mp3 sau khi đăng đủ), `check_frames.py`
   (style remotion: dò + render lại khung hỏng trong chuỗi ảnh trước khi ghép — chống
   giật/nháy màn hình), `upload_youtube.py`
   (bản copy trỏ creds Trạm AI + chặn sai kênh, `--channel en` cho Tram AI Channel, category 28 Khoa học & Công nghệ),

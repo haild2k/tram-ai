@@ -111,6 +111,48 @@
           "url": "https://cafef.vn/ai.html"
         }
       ],
+      "tech_sections": [
+        {
+          "name": "Tuổi Trẻ - Công nghệ",
+          "url": "https://tuoitre.vn/cong-nghe.htm",
+          "rss": "https://tuoitre.vn/rss/cong-nghe.rss"
+        },
+        {
+          "name": "Tuổi Trẻ - Nhịp sống số",
+          "url": "https://tuoitre.vn/nhip-song-so.htm",
+          "rss": "https://tuoitre.vn/rss/nhip-song-so.rss"
+        },
+        {
+          "name": "VnExpress - Khoa học công nghệ",
+          "url": "https://vnexpress.net/khoa-hoc-cong-nghe",
+          "rss": "https://vnexpress.net/rss/khoa-hoc-cong-nghe.rss"
+        },
+        {
+          "name": "VnExpress - Số hoá",
+          "url": "https://vnexpress.net/so-hoa",
+          "rss": "https://vnexpress.net/rss/so-hoa.rss"
+        },
+        {
+          "name": "Thanh Niên - Công nghệ",
+          "url": "https://thanhnien.vn/cong-nghe.htm",
+          "rss": "https://thanhnien.vn/rss/cong-nghe.rss"
+        },
+        {
+          "name": "Dân trí - Công nghệ",
+          "url": "https://dantri.com.vn/cong-nghe.htm",
+          "rss": "https://dantri.com.vn/rss/cong-nghe.rss"
+        },
+        {
+          "name": "ZNews - Công nghệ",
+          "url": "https://znews.vn/cong-nghe.html",
+          "rss": "https://znews.vn/rss/cong-nghe.rss"
+        },
+        {
+          "name": "Genk",
+          "url": "https://genk.vn",
+          "rss": "https://genk.vn/rss/home.rss"
+        }
+      ],
       "seed_queries_en": [
         "AI news this week",
         "new AI model explained",

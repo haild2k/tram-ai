@@ -85,12 +85,18 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
 - **Bước 11**: `python3 .claude/skills/tram-ai-skill/scripts/compose_thumbnail.py --dir <outputDir> --image <outputDir>/source-images/img-hook.jpg [--title "<≤45 ký tự>"]`.
 - **Bước 11b (DUYỆT)**: giữ nguyên mẫu bản duyệt, đổi dòng cuối thành
   `Trả lời "duyệt" / "đăng" để đăng YouTube + Facebook, rồi dựng và đăng bản tiếng Anh lên Tram AI Channel, hoặc ghi rõ cần sửa gì.`
+  (chủ đề không qua bộ lọc "Chủ đề toàn cầu" → bỏ vế bản tiếng Anh, thêm dòng
+  `Bản tiếng Anh: không làm — chủ đề riêng cho người Việt (<lý do>)` để user biết.)
   KHÔNG đăng gì trước khi user duyệt rõ ràng.
 - **Bước 12**: đăng theo SKILL.md mục **Đăng 3 nền tảng** (YouTube video dài có
   chapters, KHÔNG tải phụ đề → Facebook video thường; TikTok tạm dừng).
   COVER_MS như `media-skill` Bước 5b.
-- **Bước 12b**: dựng `video_en.mp4` rồi đăng Tram AI Channel theo SKILL.md mục
-  **Bản video tiếng Anh** — lần duyệt ở Bước 11b đã bao gồm bước này, không hỏi lại.
+- **Bước 12b**: chỉ khi chủ đề qua bộ lọc "Chủ đề toàn cầu" — dựng `video_en.mp4` rồi
+  đăng Tram AI Channel theo SKILL.md mục **Bản video tiếng Anh**; lần duyệt ở Bước 11b
+  đã bao gồm bước này, không hỏi lại.
+- **Bước 12c**: đăng xong toàn bộ media → dọn outputDir (xoá mọi `.mp4`/`.mp3`) theo
+  SKILL.md mục **Dọn thư mục sau khi đăng xong toàn bộ media**. Render bản Anh xong rồi mới
+  đăng, không chạy song song (máy từng bị kill vì hết bộ nhớ).
 - **Bước 13**: bảng kết quả SKILL.md + các dòng: `Mục nổi bật`, `Bảng so sánh`,
   `Chương`, `Loại video: <1 tin AI tuần | 2 so sánh công cụ AI | 3 chủ đề: …>`,
   `TTS: remote · minh_quan · hook atempo=1.10`, `Hook`, `Ảnh`.

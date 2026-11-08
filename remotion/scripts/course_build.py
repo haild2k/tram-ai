@@ -14,7 +14,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTRO = {"vi": "Theo dõi Trạm AI để cập nhật trí tuệ nhân tạo mỗi ngày.",
          "en": "Follow Tram AI for daily updates on artificial intelligence."}
-KINDS = {"hook", "map", "lesson", "points", "cards", "prompt", "steps", "flow", "compare", "chat", "tree", "big", "summary", "fig"}
+KINDS = {"hook", "map", "lesson", "points", "cards", "prompt", "steps", "flow", "compare", "chat", "tree", "big", "summary", "fig", "math", "symbols"}
 
 
 def T(b, lang):
@@ -45,7 +45,7 @@ def main():
             for k in ("from", "to", "leadAt"):
                 if s.get(k):
                     phrases.append(T(s[k], lang))
-            for it in s.get("items", []) + ([s["note"]] if s.get("note") else []) + s.get("rows", []) + s.get("lessons", []) + s.get("hl", []):
+            for it in s.get("items", []) + ([s["note"]] if s.get("note") else []) + s.get("rows", []) + s.get("lessons", []) + s.get("hl", []) + s.get("bars", []) + s.get("vecs", []):
                 if it.get("at"):
                     phrases.append(T(it["at"], lang))
             for ph in phrases:

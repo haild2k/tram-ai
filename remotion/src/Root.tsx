@@ -1,3 +1,21 @@
+import { RacAiCongSoEn, RacAiCongSoEnThumb } from "./videos/rac-ai-cong-so-08-11-en";
+import { RacAiCongSo, RacAiCongSoThumb } from "./videos/rac-ai-cong-so-08-11";
+import { AmdBoGameThuEn, AmdBoGameThuEnThumb } from "./videos/amd-bo-game-thu-08-11-en";
+import { AmdBoGameThu, AmdBoGameThuThumb } from "./videos/amd-bo-game-thu-08-11";
+import { VibecodeNghienEn, VibecodeNghienEnThumb } from "./videos/vibecode-nghien-08-11-en";
+import { VibecodeNghien, VibecodeNghienThumb } from "./videos/vibecode-nghien-08-11";
+import { AppAnhKhoaThanEn, AppAnhKhoaThanEnThumb } from "./videos/app-anh-khoa-than-08-11-en";
+import { AppAnhKhoaThan, AppAnhKhoaThanThumb } from "./videos/app-anh-khoa-than-08-11";
+import { UnitreeKhongHuanLuyenEn, UnitreeKhongHuanLuyenEnThumb } from "./videos/unitree-khong-huan-luyen-08-11-en";
+import { UnitreeKhongHuanLuyen, UnitreeKhongHuanLuyenThumb } from "./videos/unitree-khong-huan-luyen-08-11";
+import { Quantization, QuantizationThumb, QuantizationEn, QuantizationEnThumb } from "./videos/quantization-07-11";
+import { HacktronOpenaiEn, HacktronOpenaiEnThumb } from "./videos/hacktron-openai-07-11-en";
+import { MetaBaoChiEn, MetaBaoChiEnThumb } from "./videos/meta-bao-chi-07-11-en";
+import { VonframChipAiEn, VonframChipAiEnThumb } from "./videos/vonfram-chip-ai-07-11-en";
+import { HacktronOpenai, HacktronOpenaiThumb } from "./videos/hacktron-openai-07-11";
+import { MetaBaoChi, MetaBaoChiThumb } from "./videos/meta-bao-chi-07-11";
+import { VonframChipAi, VonframChipAiThumb } from "./videos/vonfram-chip-ai-07-11";
+import { PhepTinhPaper, PhepTinhPaperThumb, PhepTinhPaperEn, PhepTinhPaperEnThumb } from "./videos/phep-tinh-paper-06-11";
 import { Gpt6CyberEn, Gpt6CyberEnThumb } from "./videos/gpt6-cyber-06-11-en";
 import { ClaudeVaultEn, ClaudeVaultEnThumb } from "./videos/claude-vault-06-11-en";
 import { AiVietNam45trEn, AiVietNam45trEnThumb } from "./videos/ai-viet-nam-45tr-06-11-en";
@@ -81,6 +99,42 @@ export const RemotionRoot: React.FC = () => {
       <ClaudeVaultThumb />
       <AiVietNam45tr />
       <AiVietNam45trThumb />
+      <Quantization />
+      <QuantizationThumb />
+      <QuantizationEn />
+      <QuantizationEnThumb />
+      <VonframChipAi />
+      <VonframChipAiThumb />
+      <MetaBaoChi />
+      <MetaBaoChiThumb />
+      <RacAiCongSo />
+      <RacAiCongSoEn />
+      <RacAiCongSoEnThumb />
+      <RacAiCongSoThumb />
+      <AmdBoGameThu />
+      <AmdBoGameThuEn />
+      <AmdBoGameThuEnThumb />
+      <AmdBoGameThuThumb />
+      <VibecodeNghien />
+      <VibecodeNghienEn />
+      <VibecodeNghienEnThumb />
+      <VibecodeNghienThumb />
+      <AppAnhKhoaThan />
+      <AppAnhKhoaThanEn />
+      <AppAnhKhoaThanEnThumb />
+      <AppAnhKhoaThanThumb />
+      <UnitreeKhongHuanLuyen />
+      <UnitreeKhongHuanLuyenEn />
+      <UnitreeKhongHuanLuyenEnThumb />
+      <UnitreeKhongHuanLuyenThumb />
+      <HacktronOpenai />
+      <HacktronOpenaiThumb />
+      <VonframChipAiEn />
+      <VonframChipAiEnThumb />
+      <MetaBaoChiEn />
+      <MetaBaoChiEnThumb />
+      <HacktronOpenaiEn />
+      <HacktronOpenaiEnThumb />
       <MaXiaoAi />
       <MaXiaoAiThumb />
       <OpenaiImages26 />
@@ -119,6 +173,10 @@ export const RemotionRoot: React.FC = () => {
       <GoldmanClaudeCodeThumb />
       <GoldmanClaudeCodeEn />
       <GoldmanClaudeCodeEnThumb />
+      <PhepTinhPaper />
+      <PhepTinhPaperThumb />
+      <PhepTinhPaperEn />
+      <PhepTinhPaperEnThumb />
       <CacPhuongPhapRag />
       <CacPhuongPhapRagThumb />
       <CacPhuongPhapRagEn />

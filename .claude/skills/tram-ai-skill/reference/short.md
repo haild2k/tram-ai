@@ -91,8 +91,11 @@ Ngoài toàn bộ chỉ thị 1c–1j của `media-remote-skill`, thêm:
    theo `SKILL.md` mục **Bộ file YouTube Studio**.
 5. Đăng **luôn, không hỏi**: YouTube → Facebook theo `SKILL.md` mục **Đăng
    3 nền tảng** (TikTok tạm dừng — không đăng).
-6. Dựng `video_en.mp4` rồi đăng Tram AI Channel, **không hỏi**, theo `SKILL.md` mục
-   **Bản video tiếng Anh**.
+6. Qua bộ lọc "Chủ đề toàn cầu" (`SKILL.md` mục **Bản video tiếng Anh**): đạt → dựng
+   `video_en.mp4` rồi đăng Tram AI Channel, **không hỏi**; chủ đề riêng cho người Việt
+   → bỏ qua, ghi lý do ở báo kết quả (và vào `.en_skipped`).
+6b. Đăng xong toàn bộ media → dọn outputDir (xoá mọi `.mp4`/`.mp3`) theo `SKILL.md` mục
+   **Dọn thư mục sau khi đăng xong toàn bộ media**. Còn nền tảng chưa đăng → không dọn.
 7. Báo kết quả theo `SKILL.md`, thêm các dòng tóm tắt của `media-remote-skill`
    Bước 7 (TTS remote · hook · motion · Nghiên cứu · ảnh đã crop).
 

@@ -2,7 +2,9 @@
 // Mỗi cảnh: { id, kind, chapter?, voice:{vi,en}, ...trường theo kind }. Chữ: {vi,en} hoặc chuỗi chung.
 // `at` = cụm từ trong lời đọc (đúng ngôn ngữ) để bật khối đúng lúc; bỏ trống → tự rải đều theo giọng.
 // Trong chữ: **đậm vàng**, ``mono``, xuống dòng bằng \n.
-import { AbsoluteFill, Composition, Img, interpolate, staticFile } from "remotion";
+import { AbsoluteFill, Composition, Img, continueRender, delayRender, interpolate, staticFile } from "remotion";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import { Background } from "./Chrome";
 import { Chip, Composer, CourseLang, CueProvider, Head, InfoCard, LessonOpen, PracticeTag, Pt, Step, useCue } from "./course";
 import { C, fontFamily, rise } from "./theme";
@@ -13,7 +15,10 @@ import { createContext, useContext } from "react";
 
 export type Lang = "vi" | "en";
 export type Bi = string | { vi: string; en: string };
-type It = { at?: Bi; t: Bi; sub?: Bi; mark?: Bi; flag?: boolean; accent?: "a1" | "a2" | "red" };
+type It = { at?: Bi; t: Bi; sub?: Bi; mark?: Bi; flag?: boolean; accent?: "a1" | "a2" | "red"; ms?: number };
+/** kind "math": cột/điểm minh hoạ. */
+type Bar = { k: Bi; v: number; at?: Bi; hot?: boolean };
+type Vec = { x: number; y: number; label: Bi; at?: Bi; color?: "a1" | "a2" | "red" };
 
 export type Scene = {
   id: string;
@@ -49,6 +54,15 @@ export type Scene = {
   ar?: number;
   figH?: number;
   hl?: { at: Bi; box: Box }[];
+  /** kind "math": công thức chính (TeX), cách đọc, minh hoạ bên phải. */
+  tex?: Bi;
+  texSize?: number;
+  read?: Bi;
+  viz?: "bars" | "descent" | "vec";
+  vizTitle?: Bi;
+  bars?: Bar[];
+  pts?: number[];
+  vecs?: Vec[];
 };
 export type Spec = {
   slug: string;
@@ -64,7 +78,26 @@ const useT = () => {
 
 const ACC = { a1: C.accent1, a2: C.accent2, red: C.danger };
 
-/** Chữ có **đậm vàng**, ``mono`` và \n. */
+/* ---- Công thức (KaTeX) ---------------------------------------------------- */
+
+if (typeof document !== "undefined") {
+  const h = delayRender("KaTeX fonts");
+  Promise.all(
+    ["KaTeX_Main", "KaTeX_Math", "KaTeX_Size1", "KaTeX_Size2", "KaTeX_Size3", "KaTeX_AMS"].flatMap((f) => [
+      document.fonts.load(`40px ${f}`),
+      document.fonts.load(`italic 40px ${f}`),
+      document.fonts.load(`bold 40px ${f}`),
+    ]),
+  )
+    .catch(() => undefined)
+    .then(() => continueRender(h));
+}
+
+export const TeX: React.FC<{ tex: string; display?: boolean; style?: React.CSSProperties }> = ({ tex, display, style }) => (
+  <span style={style} dangerouslySetInnerHTML={{ __html: katex.renderToString(tex, { displayMode: !!display, throwOnError: true, strict: false }) }} />
+);
+
+/** Chữ có **đậm vàng**, ``mono``, $công thức$ và \n. */
 export const Rich: React.FC<{ s: string }> = ({ s }) => {
   const lines = s.split("\n");
   return (
@@ -72,8 +105,10 @@ export const Rich: React.FC<{ s: string }> = ({ s }) => {
       {lines.map((ln, li) => (
         <span key={li}>
           {li > 0 && <br />}
-          {ln.split(/(\*\*[^*]+\*\*|``[^`]+``)/).map((part, i) =>
-            part.startsWith("**") ? (
+          {ln.split(/(\*\*[^*]+\*\*|``[^`]+``|\$[^$]+\$)/).map((part, i) =>
+            part.startsWith("$") && part.length > 2 ? (
+              <TeX key={i} tex={part.slice(1, -1)} />
+            ) : part.startsWith("**") ? (
               <span key={i} style={{ color: C.accent2 }}>
                 {part.slice(2, -2)}
               </span>
@@ -570,7 +605,176 @@ const Fig: K = ({ s, img }) => {
   );
 };
 
+/* ---- Toán: công thức + ví dụ từng bước + minh hoạ --------------------------- */
+
+const VizBars: React.FC<{ s: Scene; P: (at: Bi | undefined, i?: number, n?: number) => number; R: (b: Bi | undefined) => React.ReactNode }> = ({ s, P, R }) => {
+  const lang = useContext(LangCtx);
+  const bars = s.bars ?? [];
+  const mx = Math.max(...bars.map((b) => Math.abs(b.v)), 1e-9);
+  return (
+    <div>
+      {bars.map((b, i) => {
+        const p = P(b.at, i, bars.length);
+        const col = b.hot ? C.accent2 : C.accent1;
+        return (
+          <div key={i} style={{ ...rise(p, 16), display: "flex", alignItems: "center", gap: 18, marginTop: 18 }}>
+            <div style={{ width: 150, fontSize: 30, fontWeight: 700, textAlign: "right" }}>{R(b.k)}</div>
+            <div style={{ flex: 1, height: 46, background: C.faint, borderRadius: 10, overflow: "hidden" }}>
+              <div style={{ width: `${(Math.abs(b.v) / mx) * 100 * p}%`, height: "100%", background: col, borderRadius: 10 }} />
+            </div>
+            <div style={{ width: 120, fontSize: 32, fontWeight: 800, color: col }}>{String(b.v).replace(".", lang === "en" ? "." : ",")}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const VizDescent: React.FC<{ s: Scene; P: (at: Bi | undefined, i?: number, n?: number) => number }> = ({ s, P }) => {
+  const lang = useContext(LangCtx);
+  const W = 600;
+  const H = 420;
+  const X = (x: number) => W / 2 + (x / 3.6) * (W / 2 - 20);
+  const Y = (y: number) => H - 30 - (y / 13) * (H - 60);
+  const curve = Array.from({ length: 73 }, (_, i) => {
+    const x = -3.6 + i * 0.1;
+    return `${i ? "L" : "M"}${X(x).toFixed(1)},${Y(x * x).toFixed(1)}`;
+  }).join(" ");
+  const pts = s.pts ?? [];
+  const items = s.items ?? [];
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+      <line x1={10} y1={Y(0)} x2={W - 10} y2={Y(0)} stroke={C.faint} strokeWidth={3} />
+      <line x1={X(0)} y1={10} x2={X(0)} y2={H - 10} stroke={C.faint} strokeWidth={3} />
+      <path d={curve} fill="none" stroke={C.accent1} strokeWidth={6} />
+      {pts.map((x, i) => {
+        const p = i === 0 ? 1 : P(items[i - 1]?.at, i - 1, items.length);
+        const prev = i > 0 ? pts[i - 1] : x;
+        const cx = prev + (x - prev) * p;
+        const last = i === pts.length - 1 || P(items[i]?.at, i, items.length) === 0;
+        if (p === 0) return null;
+        return (
+          <g key={i}>
+            <circle cx={X(cx)} cy={Y(cx * cx)} r={last ? 18 : 10} fill={last ? C.accent2 : "rgba(242,178,84,0.45)"} />
+            {last && (
+              <text x={X(cx) + 26} y={Y(cx * cx) - 14} fill={C.accent2} fontSize={32} fontWeight={800} fontFamily={fontFamily}>
+                {String(+cx.toFixed(2)).replace(".", lang === "en" ? "." : ",")}
+              </text>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+const VizVec: React.FC<{ s: Scene; P: (at: Bi | undefined, i?: number, n?: number) => number; T: (b: Bi | undefined) => string }> = ({ s, P, T }) => {
+  const W = 560;
+  const H = 440;
+  const U = 150;
+  const ox = 90;
+  const oy = H - 70;
+  const vecs = s.vecs ?? [];
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+      <defs>
+        {(["a1", "a2", "red"] as const).map((k) => (
+          <marker key={k} id={`ah-${k}`} markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill={ACC[k]} />
+          </marker>
+        ))}
+      </defs>
+      <line x1={20} y1={oy} x2={W - 20} y2={oy} stroke={C.faint} strokeWidth={3} />
+      <line x1={ox} y1={20} x2={ox} y2={H - 20} stroke={C.faint} strokeWidth={3} />
+      {vecs.map((v, i) => {
+        const p = P(v.at, i, vecs.length);
+        const k = v.color ?? (i ? "a2" : "a1");
+        const ex = ox + v.x * U * p;
+        const ey = oy - v.y * U * p;
+        return (
+          <g key={i} opacity={p}>
+            <line x1={ox} y1={oy} x2={ex} y2={ey} stroke={ACC[k]} strokeWidth={8} markerEnd={`url(#ah-${k})`} />
+            <text x={ox + v.x * U + 14} y={oy - v.y * U - 12} fill={ACC[k]} fontSize={34} fontWeight={800} fontFamily={fontFamily}>
+              {T(v.label)}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+const MathK: K = ({ s }) => {
+  const { e, R, P, T, on } = useKit(s);
+  const items = s.items ?? [];
+  const viz = s.viz;
+  const texP = e(0.35);
+  return (
+    <WStage justify="center">
+      <Head p={e(0)} n={s.n ? T(s.n) : undefined} kicker={T(s.kicker)} size={s.size ?? 54}>
+        {R(s.title)}
+      </Head>
+      {s.tex && (
+        <Card p={texP} style={{ marginTop: 22, padding: "18px 40px", display: "flex", alignItems: "center", gap: 46, borderColor: C.accent2 }}>
+          <div style={{ fontSize: s.texSize ?? 60, color: C.ink, flexShrink: 0 }}>
+            <TeX tex={`\\displaystyle ${T(s.tex)}`} />
+          </div>
+          {s.read && <div style={{ ...rise(s.leadAt ? on(T(s.leadAt)) : e(1.2), 14), fontSize: 30, color: C.muted, lineHeight: 1.38, borderLeft: `3px solid ${C.faint}`, paddingLeft: 30 }}>{R(s.read)}</div>}
+        </Card>
+      )}
+      <Row gap={56} style={{ marginTop: 26, alignItems: "center" }}>
+        <div style={{ flex: 1 }}>
+          {items.map((it, i) => (
+            <Pt key={i} p={P(it.at, i, items.length)} mark={it.mark ? T(it.mark) : i + 1} color={it.accent ? ACC[it.accent] : C.accent1} size={s.viz ? 33 : 36} sub={it.sub ? R(it.sub) : undefined}>
+              {R(it.t)}
+            </Pt>
+          ))}
+          {s.note && <div style={{ ...rise(P(s.note.at, items.length, items.length)), marginTop: 28, fontSize: 32, color: C.accent2, fontWeight: 700, lineHeight: 1.35 }}>{R(s.note.t)}</div>}
+        </div>
+        {viz && (
+          <Card p={e(0.5)} style={{ width: 680, padding: "24px 30px", flexShrink: 0 }}>
+            {s.vizTitle && <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 6 }}>{R(s.vizTitle)}</div>}
+            {viz === "bars" && <VizBars s={s} P={P} R={R} />}
+            {viz === "descent" && <VizDescent s={s} P={P} />}
+            {viz === "vec" && <VizVec s={s} P={P} T={T} />}
+          </Card>
+        )}
+      </Row>
+    </WStage>
+  );
+};
+
+/** Lưới ký hiệu: mark = ký hiệu TeX (to), t = tên, sub = nghĩa/ví dụ. */
+const Symbols: K = ({ s }) => {
+  const { e, R, P, T } = useKit(s);
+  const items = s.items ?? [];
+  const cols = s.cols ?? 3;
+  return (
+    <WStage>
+      <Head p={e(0)} n={s.n ? T(s.n) : undefined} kicker={T(s.kicker)} size={s.size ?? 54}>
+        {R(s.title)}
+      </Head>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 22, marginTop: 28 }}>
+        {items.map((it, i) => (
+          <Card key={i} p={P(it.at, i, items.length)} style={{ padding: "22px 28px", display: "flex", alignItems: "center", gap: 26 }}>
+            <div style={{ minWidth: 130, fontSize: it.ms ?? 54, color: C.accent2, textAlign: "center", whiteSpace: "nowrap" }}>
+              <TeX tex={T(it.mark)} />
+            </div>
+            <div>
+              <div style={{ fontSize: 32, fontWeight: 800, lineHeight: 1.2 }}>{R(it.t)}</div>
+              {it.sub && <div style={{ fontSize: 26, color: C.muted, marginTop: 6, lineHeight: 1.35 }}>{R(it.sub)}</div>}
+            </div>
+          </Card>
+        ))}
+      </div>
+      {s.note && <div style={{ ...rise(P(s.note.at, items.length, items.length)), marginTop: 30, fontSize: 31, color: C.accent2, fontWeight: 700 }}>{R(s.note.t)}</div>}
+    </WStage>
+  );
+};
+
 const KINDS: Record<string, K> = {
+  math: MathK,
+  symbols: Symbols,
   fig: Fig,
   hook: Hook,
   map: Map,
