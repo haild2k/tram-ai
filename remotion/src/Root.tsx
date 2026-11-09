@@ -1,3 +1,12 @@
+import { GoncourtChatgptEn, GoncourtChatgptEnThumb } from "./videos/goncourt-chatgpt-09-11-en";
+import { GoncourtChatgpt, GoncourtChatgptThumb } from "./videos/goncourt-chatgpt-09-11";
+import { TuyenDungAiEn, TuyenDungAiEnThumb } from "./videos/tuyen-dung-ai-09-11-en";
+import { TuyenDungAi, TuyenDungAiThumb } from "./videos/tuyen-dung-ai-09-11";
+import { ZaloAiChallenge, ZaloAiChallengeThumb } from "./videos/zalo-ai-challenge-09-11";
+import { AiPhatThaiEn, AiPhatThaiEnThumb } from "./videos/ai-phat-thai-09-11-en";
+import { AiPhatThai, AiPhatThaiThumb } from "./videos/ai-phat-thai-09-11";
+import { ArtexHackEn, ArtexHackEnThumb } from "./videos/artex-hack-09-11-en";
+import { ArtexHack, ArtexHackThumb } from "./videos/artex-hack-09-11";
 import { RacAiCongSoEn, RacAiCongSoEnThumb } from "./videos/rac-ai-cong-so-08-11-en";
 import { RacAiCongSo, RacAiCongSoThumb } from "./videos/rac-ai-cong-so-08-11";
 import { AmdBoGameThuEn, AmdBoGameThuEnThumb } from "./videos/amd-bo-game-thu-08-11-en";
@@ -107,6 +116,24 @@ export const RemotionRoot: React.FC = () => {
       <VonframChipAiThumb />
       <MetaBaoChi />
       <MetaBaoChiThumb />
+      <GoncourtChatgpt />
+      <GoncourtChatgptEn />
+      <GoncourtChatgptEnThumb />
+      <GoncourtChatgptThumb />
+      <TuyenDungAi />
+      <TuyenDungAiEn />
+      <TuyenDungAiEnThumb />
+      <TuyenDungAiThumb />
+      <ZaloAiChallenge />
+      <ZaloAiChallengeThumb />
+      <AiPhatThai />
+      <AiPhatThaiEn />
+      <AiPhatThaiEnThumb />
+      <AiPhatThaiThumb />
+      <ArtexHack />
+      <ArtexHackEn />
+      <ArtexHackEnThumb />
+      <ArtexHackThumb />
       <RacAiCongSo />
       <RacAiCongSoEn />
       <RacAiCongSoEnThumb />
