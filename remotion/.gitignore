@@ -5,3 +5,6 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# whisper.cpp + model (cài bằng scripts/install_whisper.mjs)
+whisper.cpp/

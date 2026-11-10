@@ -33,6 +33,9 @@ export type Scene = {
   leadAt?: Bi;
   num?: string;
   source?: string;
+  /** kind "lesson": nhãn số (vd PHẦN) và nhãn nguồn, ghi đè mặc định của khóa Claude Cowork. */
+  numLabel?: Bi;
+  srcLabel?: Bi;
   img?: string;
   imgW?: number;
   caption?: Bi;
@@ -235,6 +238,8 @@ const Lesson: K = ({ s }) => {
       lead={<Rich s={T(s.lead)} />}
       leadAt={s.leadAt ? T(s.leadAt) : undefined}
       source={s.source ?? ""}
+      numLabel={s.numLabel ? T(s.numLabel) : undefined}
+      srcLabel={s.srcLabel ? T(s.srcLabel) : undefined}
       tags={(s.items ?? []).map((it) => ({ at: T(it.at), text: <Rich s={T(it.t)} /> }))}
     />
   );
@@ -799,6 +804,10 @@ export type ThumbOpts = {
   line1: Bi;
   img?: string;
   foot: Bi;
+  /** Ghi đè cho series khác: nhãn góc (mặc định PHẦN n/total) và 2 dòng tên lớn (mặc định Claude / Cowork). */
+  badge?: Bi;
+  name?: [Bi, Bi];
+  nameSize?: number;
 };
 
 export const defineCourse = ({
@@ -850,12 +859,12 @@ export const defineCourse = ({
       )}
       <div style={{ position: "absolute", left: 60, top: 70, width: 660 }}>
         <div style={{ display: "inline-block", background: C.accent2, color: C.bg1, fontWeight: 900, fontSize: 30, padding: "8px 20px", borderRadius: 12, letterSpacing: 2 }}>
-          {lang === "en" ? `PART ${thumb.part}/${thumb.total ?? 5}` : `PHẦN ${thumb.part}/${thumb.total ?? 5}`}
+          {thumb.badge ? T(thumb.badge) : lang === "en" ? `PART ${thumb.part}/${thumb.total ?? 5}` : `PHẦN ${thumb.part}/${thumb.total ?? 5}`}
         </div>
-        <div style={{ fontSize: 118, fontWeight: 900, lineHeight: 1.0, letterSpacing: -3, marginTop: 26 }}>
-          Claude
+        <div style={{ fontSize: thumb.nameSize ?? 118, fontWeight: 900, lineHeight: 1.0, letterSpacing: -3, marginTop: 26 }}>
+          {thumb.name ? T(thumb.name[0]) : "Claude"}
           <br />
-          <span style={{ color: C.accent2 }}>Cowork</span>
+          <span style={{ color: C.accent2 }}>{thumb.name ? T(thumb.name[1]) : "Cowork"}</span>
         </div>
         <div style={{ fontSize: 50, fontWeight: 800, marginTop: 22, lineHeight: 1.15 }}>
           {T(thumb.line1)}

@@ -15,6 +15,7 @@ Quy trình dựng video lấy từ 3 tài liệu nền trong [reference/base/](r
 | **SHORT** (mặc định) | 1 tin / 1 chủ đề / 1 URL, user không nói "video dài" | [reference/short.md](reference/short.md) (nền: `base/media-remote-skill.md`) | **Không** — render xong đăng luôn |
 | **LONG** | user nói "video dài", "tổng hợp tuần", "so sánh", "loại 1/2/3" | [reference/long.md](reference/long.md) (nền: `base/media-long-remote-skill.md`) | **Bắt buộc** — dừng chờ user duyệt |
 | **LONG · paper** | user đưa link arXiv / Hugging Face Papers / GitHub của 1 paper, nói "giải thích paper", "loại 4" | [reference/long-paper.md](reference/long-paper.md) (+ `long.md` cho đăng/duyệt) — style remotion 16:9 | **Bắt buộc** — dừng chờ user duyệt |
+| **LONG · series skill** | series "Skill cho AI Agent" (giải thích 1 skill/tập) | [reference/series-skill.md](reference/series-skill.md) — style chính `skill-motion`, dự phòng `course`; xem [reference/style-skill-motion.md](reference/style-skill-motion.md) | **Bắt buộc** — dừng chờ user duyệt |
 
 Mơ hồ (vd chỉ "làm video Trạm AI về GPT-6") → SHORT. Đọc file reference của
 chế độ đã chọn **từ đầu đến cuối** rồi mới làm; các mục bên dưới áp dụng cho cả
