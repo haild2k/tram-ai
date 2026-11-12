@@ -372,7 +372,10 @@ export const LessonOpen: React.FC<{
   leadAt?: string;
   source: string;
   tags?: { at: string; text: React.ReactNode }[];
-}> = ({ id, num, title, lead, leadAt, source, tags = [] }) => {
+  /** Ghi đè nhãn (mặc định "BÀI" và "Bài gốc · Claude Academy:") cho series khác. */
+  numLabel?: string;
+  srcLabel?: string;
+}> = ({ id, num, title, lead, leadAt, source, tags = [], numLabel, srcLabel }) => {
   const { e, on } = useCue(id);
   const L = useL();
   const big = e(0, 0.9);
@@ -395,7 +398,7 @@ export const LessonOpen: React.FC<{
               color: C.accent1,
             }}
           >
-            {L("BÀI", "LESSON")}
+            {numLabel ?? L("BÀI", "LESSON")}
           </div>
           <div
             style={{
@@ -460,7 +463,7 @@ export const LessonOpen: React.FC<{
             }}
           >
             <span style={{ color: C.accent2, fontWeight: 700 }}>
-              {L("Bài gốc · Claude Academy:", "Original · Claude Academy:")}
+              {srcLabel ?? L("Bài gốc · Claude Academy:", "Original · Claude Academy:")}
             </span>{" "}
             {source}
           </div>

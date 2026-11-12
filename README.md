@@ -1,3 +1,4 @@
+Lần sau bạn chỉ cần nói "làm theo style skill-motion" là mình dùng đúng style này. Style cũ được gọi là course.
 # Trạm AI
 
 Project sản xuất + đăng video cho kênh **Trạm AI** (tin tức và giải thích về trí
