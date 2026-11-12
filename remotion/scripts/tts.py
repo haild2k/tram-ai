@@ -18,6 +18,14 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Giọng OmniVoice dồn năng lượng vào 90–300 Hz (đỉnh 120–180 Hz) → nghe "ù ù" đục suốt
+# video, dải rõ chữ 1,2–5 kHz thấp hơn ~20 dB. Cắt trầm < 100 Hz, giảm vùng ù 160 Hz,
+# nâng độ rõ 3 kHz, khử nhiễu nền nhẹ — chạy TRƯỚC loudnorm.
+VOICE_EQ = ("highpass=f=100:p=2,"
+            "equalizer=f=160:t=q:w=1:g=-8,"
+            "equalizer=f=3000:t=q:w=1:g=5,"
+            "afftdn=nf=-45")
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -26,6 +34,7 @@ def main():
     ap.add_argument("--voice", default="minh_quan")
     ap.add_argument("--hook-tempo", type=float, default=1.10)
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--no-eq", action="store_true", help="bỏ lọc ù (VOICE_EQ), chỉ loudnorm như cũ")
     a = ap.parse_args()
 
     src = os.path.join(ROOT, "src", "videos", a.slug)
@@ -51,7 +60,7 @@ def main():
 
     durations = {}
     for i, sc in enumerate(scenes):
-        af = "loudnorm=I=-16:TP=-1.5:LRA=11"
+        af = ("" if a.no_eq else VOICE_EQ + ",") + "loudnorm=I=-16:TP=-1.5:LRA=11"
         if i == 0:
             af = f"atempo={a.hook_tempo},{af}"
         out = os.path.join(vdir, f"{sc['id']}.mp3")

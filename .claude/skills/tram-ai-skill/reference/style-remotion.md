@@ -65,8 +65,13 @@ remotion/
    8–10 cảnh, cảnh đầu là hook, cảnh cuối **luôn** `{"id":"outro","voiceText":"Theo dõi Trạm AI để cập nhật trí tuệ nhân tạo mỗi ngày."}`.
    `voiceText` viết số ra chữ theo quy tắc TTS của `short.md`. Tổng giọng 75–110s.
 2. **Giọng**: `cd remotion && python3 scripts/tts.py <slug>` (kiểm `/health`,
-   `minh_quan`, hook ×1,10, loudnorm, ghi `durations.json`). Sửa lời 1 cảnh →
+   `minh_quan`, hook ×1,10, lọc ù `VOICE_EQ` → loudnorm, ghi `durations.json`). Sửa lời 1 cảnh →
    xoá `public/videos/<slug>/voice/<id>.raw.mp3` rồi chạy lại.
+   **Lọc ù (bắt buộc, mặc định)**: giọng OmniVoice gốc bị dồn trầm 120–180 Hz → nghe
+   "ù ù" suốt video. `tts.py` luôn chạy `VOICE_EQ` (highpass 100 Hz, −8 dB @160 Hz,
+   +5 dB @3 kHz, `afftdn`) trước loudnorm. Không bỏ bước này; `--no-eq` chỉ để so sánh.
+   Video cũ muốn sạch ù: chạy lại `tts.py <slug>` (dùng lại `.raw.mp3`, không gọi TTS)
+   rồi render lại.
 3. **Ảnh**: tải + crop vào `public/videos/<slug>/img/`, xem từng ảnh bằng Read.
 4. **Cảnh** `src/videos/<slug>/Scenes.tsx`: mỗi cảnh 1 component dùng khối của
    `ui.tsx`; mốc `enter(frame, fps, giây)` khớp lúc giọng đọc nhắc tới thứ đó.

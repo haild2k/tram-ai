@@ -1,3 +1,19 @@
+import { FindSkills, FindSkillsThumb, FindSkillsEn, FindSkillsEnThumb } from "./videos/find-skills-10-11";
+import { SkillMcpPlugin, SkillMcpPluginThumb, SkillMcpPluginEn, SkillMcpPluginEnThumb } from "./videos/skill-mcp-plugin-10-11";
+import { ClaudeXoaGiaoAnEn, ClaudeXoaGiaoAnEnThumb } from "./videos/claude-xoa-giao-an-10-11-en";
+import { ClaudeXoaGiaoAn, ClaudeXoaGiaoAnThumb } from "./videos/claude-xoa-giao-an-10-11";
+import { Fable52En, Fable52EnThumb } from "./videos/fable-52-10-11-en";
+import { Fable52, Fable52Thumb } from "./videos/fable-52-10-11";
+import { ClaudeSheets, ClaudeSheetsThumb } from "./videos/claude-sheets-12-11";
+import { GalaxyAiTraPhi, GalaxyAiTraPhiThumb } from "./videos/galaxy-ai-tra-phi-12-11";
+import { GalaxyAiTraPhiEn, GalaxyAiTraPhiEnThumb } from "./videos/galaxy-ai-tra-phi-12-11-en";
+import { GeminiDecisions, GeminiDecisionsThumb } from "./videos/gemini-decisions-12-11";
+import { GeminiDecisionsEn, GeminiDecisionsEnThumb } from "./videos/gemini-decisions-12-11-en";
+import { OpenaiLoQ3, OpenaiLoQ3Thumb } from "./videos/openai-lo-q3-12-11";
+import { OpenaiLoQ3En, OpenaiLoQ3EnThumb } from "./videos/openai-lo-q3-12-11-en";
+import { GameUcDungAi, GameUcDungAiThumb } from "./videos/game-uc-dung-ai-12-11";
+import { GameUcDungAiEn, GameUcDungAiEnThumb } from "./videos/game-uc-dung-ai-12-11-en";
+import { ClaudeSheetsEn, ClaudeSheetsEnThumb } from "./videos/claude-sheets-12-11-en";
 import { GoncourtChatgptEn, GoncourtChatgptEnThumb } from "./videos/goncourt-chatgpt-09-11-en";
 import { GoncourtChatgpt, GoncourtChatgptThumb } from "./videos/goncourt-chatgpt-09-11";
 import { TuyenDungAiEn, TuyenDungAiEnThumb } from "./videos/tuyen-dung-ai-09-11-en";
@@ -78,6 +94,14 @@ import { TokenTiengVietEn, TokenTiengVietEnThumb } from "./videos/token-tieng-vi
 import { PhimNganAi, PhimNganAiThumb } from "./videos/phim-ngan-ai-02-11";
 import { AnthropicPhongVan, AnthropicPhongVanThumb } from "./videos/anthropic-phong-van-02-11";
 import { ChatgptNgungThuoc, ChatgptNgungThuocThumb } from "./videos/chatgpt-ngung-thuoc-31-10";
+import { AiAgentDoDoiThu, AiAgentDoDoiThuThumb } from "./videos/ai-agent-do-doi-thu-10-11";
+import { AiAgentDoDoiThuEn, AiAgentDoDoiThuEnThumb } from "./videos/ai-agent-do-doi-thu-10-11-en";
+import { OpenaiControlRoom, OpenaiControlRoomThumb } from "./videos/openai-control-room-10-11";
+import { OpenaiControlRoomEn, OpenaiControlRoomEnThumb } from "./videos/openai-control-room-10-11-en";
+import { KienOpenaiDauDoc, KienOpenaiDauDocThumb } from "./videos/kien-openai-dau-doc-10-11";
+import { KienOpenaiDauDocEn, KienOpenaiDauDocEnThumb } from "./videos/kien-openai-dau-doc-10-11-en";
+import { MicrosoftSangCheLivestream, MicrosoftSangCheLivestreamThumb } from "./videos/microsoft-sang-che-livestream-10-11";
+import { MicrosoftSangCheLivestreamEn, MicrosoftSangCheLivestreamEnThumb } from "./videos/microsoft-sang-che-livestream-10-11-en";
 import { TokenTiengViet, TokenTiengVietThumb } from "./videos/token-tieng-viet-02-11";
 import { GithubCpuAi, GithubCpuAiThumb } from "./videos/github-cpu-ai-31-10";
 
@@ -108,6 +132,14 @@ export const RemotionRoot: React.FC = () => {
       <ClaudeVaultThumb />
       <AiVietNam45tr />
       <AiVietNam45trThumb />
+      <FindSkills />
+      <FindSkillsThumb />
+      <FindSkillsEn />
+      <FindSkillsEnThumb />
+      <SkillMcpPlugin />
+      <SkillMcpPluginThumb />
+      <SkillMcpPluginEn />
+      <SkillMcpPluginEnThumb />
       <Quantization />
       <QuantizationThumb />
       <QuantizationEn />
@@ -116,6 +148,34 @@ export const RemotionRoot: React.FC = () => {
       <VonframChipAiThumb />
       <MetaBaoChi />
       <MetaBaoChiThumb />
+      <ClaudeXoaGiaoAn />
+      <ClaudeXoaGiaoAnThumb />
+      <ClaudeXoaGiaoAnEn />
+      <ClaudeXoaGiaoAnEnThumb />
+      <GameUcDungAi />
+      <GameUcDungAiThumb />
+      <GameUcDungAiEn />
+      <GameUcDungAiEnThumb />
+      <OpenaiLoQ3 />
+      <OpenaiLoQ3Thumb />
+      <OpenaiLoQ3En />
+      <OpenaiLoQ3EnThumb />
+      <GalaxyAiTraPhi />
+      <GalaxyAiTraPhiThumb />
+      <GalaxyAiTraPhiEn />
+      <GalaxyAiTraPhiEnThumb />
+      <GeminiDecisions />
+      <GeminiDecisionsThumb />
+      <GeminiDecisionsEn />
+      <GeminiDecisionsEnThumb />
+      <ClaudeSheets />
+      <ClaudeSheetsThumb />
+      <ClaudeSheetsEn />
+      <ClaudeSheetsEnThumb />
+      <Fable52 />
+      <Fable52Thumb />
+      <Fable52En />
+      <Fable52EnThumb />
       <GoncourtChatgpt />
       <GoncourtChatgptEn />
       <GoncourtChatgptEnThumb />
@@ -264,6 +324,22 @@ export const RemotionRoot: React.FC = () => {
       <GithubCpuAiThumb />
       <ChatgptNgungThuoc />
       <ChatgptNgungThuocThumb />
+      <AiAgentDoDoiThu />
+      <AiAgentDoDoiThuThumb />
+      <AiAgentDoDoiThuEn />
+      <AiAgentDoDoiThuEnThumb />
+      <OpenaiControlRoom />
+      <OpenaiControlRoomThumb />
+      <OpenaiControlRoomEn />
+      <OpenaiControlRoomEnThumb />
+      <KienOpenaiDauDoc />
+      <KienOpenaiDauDocThumb />
+      <KienOpenaiDauDocEn />
+      <KienOpenaiDauDocEnThumb />
+      <MicrosoftSangCheLivestream />
+      <MicrosoftSangCheLivestreamThumb />
+      <MicrosoftSangCheLivestreamEn />
+      <MicrosoftSangCheLivestreamEnThumb />
     </>
   );
 };
