@@ -56,7 +56,10 @@ cùng "SWE-bench Verified"); khác điều kiện → không đặt chung 1 hàn
   → "hợp với ai". Chương N+1 "Bàn cân <nhóm>", N+2 "Tin nhanh", N+3 "Nên dùng gì".
   Nhận định khách quan, rút từ số liệu; không "chê" vô căn cứ, không kêu gọi đăng ký
   dịch vụ nào.
-- **Bước 3 (ảnh)**: mục tiêu 12–25 ảnh. Sản phẩm AI ít ảnh "ngoại thất" → mỗi mục
+- **Bước 3 (ảnh)**: mục tiêu 12–25 ảnh. Kịch bản nhắc tới paper nào (vd chủ đề
+  "distillation" nêu Hinton 2015, DistilBERT, DeepSeek-R1) → gom hình gốc của
+  từng paper và dùng để giải thích từng khối theo [paper-figures.md](paper-figures.md);
+  giới hạn chữ trên hình ở mục 3 file đó áp dụng cho mọi cảnh. Sản phẩm AI ít ảnh "ngoại thất" → mỗi mục
   ưu tiên: ảnh chính chủ (ảnh bìa bài công bố, ảnh giao diện sản phẩm, ảnh sự
   kiện / lãnh đạo hãng, biểu đồ benchmark chính thức) → ảnh báo lớn → Wikimedia
   (logo / chân dung). Ảnh giao diện (`screenshot`) chỉ cho `split` / `spec`, không

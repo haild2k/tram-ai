@@ -29,6 +29,10 @@ Studio, đăng 3 nền tảng). File này chỉ **thay Bước 1** (dựng video
 
 ## Ảnh — lồng đủ ảnh phù hợp
 
+- Tin/chủ đề có nhắc tới paper → lấy hình gốc trong paper (kiến trúc, biểu đồ kết
+  quả) theo [paper-figures.md](paper-figures.md). Giới hạn chữ trên hình ở mục 3
+  file đó áp dụng cho mọi cảnh (bản 9:16: chữ thân ≤ 20 từ/cảnh).
+
 - Mỗi cảnh có dữ kiện cụ thể nên có ≥ 1 ảnh khớp đúng nội dung câu đọc; cảnh
   danh sách (gợi ý, lưu ý) có thể chỉ đồ hoạ.
 - Thứ tự nguồn: ảnh/biểu đồ trong bài chính chủ → og:image trang sản phẩm của

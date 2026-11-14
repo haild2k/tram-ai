@@ -31,6 +31,12 @@ curl -sL https://huggingface.co/papers/<id>                     # upvote, ngày 
 
 ## 2. Ảnh — gom, lọc trùng, đặt đúng chỗ giải thích
 
+> Đọc thêm [paper-figures.md](paper-figures.md) (thắng khi mâu thuẫn): mỗi khối
+> của kiến trúc được giải thích bằng **vùng của hình gốc** (tô sáng `steps` hoặc
+> cắt phóng to), không vẽ lại bằng thẻ chữ; giới hạn chữ trên hình ở mục 3.
+> Chương "Mỗi thành phần chính": mỗi cảnh có hình gốc (hoặc phần cắt của nó) làm
+> khối chính, chữ chỉ còn tiêu đề + ≤ 1 caption.
+
 1. Hình paper: `figures/*.pdf` → `pdftoppm -r 200 -png -singlefile`; ảnh png có sẵn
    copy nguyên. Ảnh repo: `assets/**`. Trang 1 PDF (`pdftoppm -f 1 -l 1`) làm thẻ paper.
 2. Lọc trùng: `python3 -I .claude/skills/tram-ai-skill/scripts/dedupe_images.py <dir> --out <uniq>`

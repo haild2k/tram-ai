@@ -58,6 +58,15 @@ Hai style dùng chung mọi bước còn lại (nghiên cứu, thương hiệu, 
 YouTube Studio, đăng 3 nền tảng). Ghi style đã dùng vào `script.json`
 (`metadata.style`) và dòng tóm tắt khi báo kết quả.
 
+## Paper được nêu → dùng hình gốc, bớt chữ (mọi chế độ)
+
+Video nào nhắc tới một paper cụ thể (kể cả video chủ đề / tin AI, không riêng loại
+`paper`) → **bắt buộc** đọc [reference/paper-figures.md](reference/paper-figures.md):
+tải hình gốc của paper (nguồn LaTeX arXiv / PDF), giải thích từng khối của phương
+pháp bằng hình gốc có tô sáng / cắt phóng to theo lời đọc, thay cho thẻ chữ và sơ
+đồ tự vẽ. Mục 3 của file đó (giới hạn chữ trên hình: tiêu đề ≤ 10 từ, chữ thân ≤ 25
+từ/cảnh, bullet ≤ 3 dòng) áp dụng cho **mọi cảnh** của mọi video.
+
 ## Ngôn ngữ — chữ trên slide TIẾNG VIỆT
 
 | Thành phần | Ngôn ngữ |
